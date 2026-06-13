@@ -1,0 +1,1178 @@
+<!--
+  Diablo IV — 100% Completion Path Checklist (PROTOTYPE v2 — atomic format)
+  One named item per line: Quest / Side Quest / Waypoint / Dungeon / Stronghold / Altar / Boss / Area.
+  Scope: Prologue + Act I (Fractured Peaks). Verified content only; gaps flagged.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0c0a09; --panel:#1a1512; --panel2:#211a16;
+    --ink:#ddccae; --ink-dim:#9a8769; --ink-faint:#6c5d49;
+    --blood:#a8211c; --blood-deep:#6e1310; --ember:#c8842e;
+    --line:rgba(200,160,110,.14); --line-strong:rgba(200,160,110,.28);
+    --done:#7fa06a; --shadow:0 18px 40px -20px rgba(0,0,0,.9);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  /* hide scrollbar but keep scrolling */
+  html{scrollbar-width:none;-ms-overflow-style:none}
+  html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{width:0;height:0;display:none}
+  body{
+    font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif; color:var(--ink); background:var(--bg);
+    background-image:
+      radial-gradient(1200px 600px at 50% -10%, rgba(168,33,28,.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, rgba(200,132,46,.06), transparent 60%),
+      linear-gradient(180deg,#0c0a09,#0a0807);
+    background-attachment:fixed; line-height:1.5; padding:0 0 80px;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 18px}
+
+  header{position:sticky;top:0;z-index:20;
+    background:linear-gradient(180deg,rgba(12,10,9,.97),rgba(12,10,9,.86));
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .hbar{max-width:860px;margin:0 auto;padding:16px 18px 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  h1{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-weight:700;letter-spacing:.06em;font-size:clamp(20px,3.6vw,30px);margin:0;
+    text-shadow:0 0 22px rgba(168,33,28,.35)}
+  h1 .sub{display:block;font-weight:400;font-style:italic;font-size:13px;color:var(--ink-dim);margin-top:3px;font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif}
+  .save{font-size:12.5px;letter-spacing:.05em;color:var(--ink-faint);white-space:nowrap;display:flex;align-items:center;gap:7px}
+  .save .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);transition:.3s}
+  .save.ok .dot{background:var(--done);box-shadow:0 0 9px var(--done)}
+  .save.busy .dot{background:var(--ember);box-shadow:0 0 9px var(--ember)}
+  .hbar-right{display:flex;align-items:center;gap:14px}
+  .menu-wrap{position:relative}
+  .ham{display:flex;flex-direction:column;justify-content:center;gap:4px;width:40px;height:34px;padding:0 10px;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;cursor:pointer;transition:.18s}
+  .ham:hover{border-color:var(--ember)}
+  .ham span{display:block;height:2px;border-radius:2px;background:var(--ink-dim);transition:.2s}
+  .ham:hover span{background:var(--ink)}
+  .ham.on span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .ham.on span:nth-child(2){opacity:0}
+  .ham.on span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .menu{position:absolute;top:calc(100% + 8px);right:0;min-width:184px;background:var(--panel2);border:1px solid var(--line-strong);border-radius:10px;box-shadow:var(--shadow);padding:6px;z-index:40;display:flex;flex-direction:column;gap:2px}
+  .menu[hidden]{display:none}
+  .menu-item{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;text-align:left;font-size:13.5px;letter-spacing:.03em;color:var(--ink-dim);background:transparent;border:0;border-radius:7px;padding:10px 12px;cursor:pointer;transition:.15s}
+  .menu-item:hover{color:var(--ink);background:var(--panel)}
+  .menu-item.danger{color:#c9756f;margin-top:2px;border-top:1px solid var(--line)}
+  .menu-item.danger:hover{color:#fff;background:rgba(168,33,28,.18)}
+
+  .overall{max-width:860px;margin:0 auto;padding:0 18px 12px}
+  .obar{height:9px;border-radius:6px;background:#000;border:1px solid var(--line);overflow:hidden}
+  .ofill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--blood-deep),var(--blood) 55%,var(--ember));box-shadow:0 0 16px rgba(168,33,28,.5);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .ometa{display:flex;justify-content:space-between;margin-top:6px;font-size:12.5px;color:var(--ink-dim);letter-spacing:.03em}
+
+  .tools{max-width:860px;margin:0 auto;padding:0 18px 8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .btn{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-size:13px;letter-spacing:.04em;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line-strong);border-radius:7px;padding:6px 12px;cursor:pointer;transition:.18s}
+  .btn:hover{color:var(--ink);border-color:var(--ember);background:var(--panel2)}
+  .btn.danger:hover{color:#fff;border-color:var(--blood);background:rgba(168,33,28,.18)}
+  .btn.on{color:var(--ink);border-color:var(--ember)}
+  .legend{max-width:860px;margin:0 auto;padding:0 18px 12px;font-size:12.5px;color:var(--ink-faint);font-style:italic}
+  .tabs{max-width:860px;margin:0 auto;padding:8px 18px 10px;display:flex;gap:8px;flex-wrap:wrap}
+  .tab{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-size:13.5px;letter-spacing:.04em;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;padding:8px 16px;cursor:pointer;transition:.18s}
+  .tab:hover{color:var(--ink);border-color:var(--ember)}
+  .tab.on{color:var(--ink);background:var(--panel2);border-color:var(--ember);box-shadow:inset 0 0 0 1px var(--ember)}
+
+  main{padding-top:14px}
+  .sec{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;margin:14px 0;overflow:hidden;box-shadow:var(--shadow)}
+  .sec-head{display:flex;align-items:center;gap:13px;padding:15px 17px;cursor:pointer;user-select:none;border-left:3px solid transparent;transition:.2s}
+  .sec-head:hover{background:rgba(200,132,46,.05)}
+  .chev{flex:0 0 auto;color:var(--ink-dim);transition:transform .25s;font-size:13px}
+  .sec.open .chev{transform:rotate(90deg);color:var(--ember)}
+  .sec-title{flex:1 1 auto;min-width:0}
+  .sec-title .t{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-weight:600;letter-spacing:.04em;font-size:15.5px}
+  .sec-title .s{font-size:12.5px;font-style:italic;color:var(--ink-dim);margin-top:2px}
+  .lvl{flex:0 0 auto;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ember);border:1px solid rgba(200,132,46,.3);border-radius:20px;padding:3px 9px;white-space:nowrap}
+  .mini{flex:0 0 auto;font-size:12px;color:var(--ink-dim);font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
+
+  .sec-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease}
+  .sec.open .sec-body{grid-template-rows:1fr}
+  .sec-inner{overflow:hidden}
+  .pbar{height:4px;background:#000;margin:0 17px}
+  .pfill{height:100%;width:0;background:linear-gradient(90deg,var(--blood),var(--ember));transition:width .4s}
+
+  .grp{padding:4px 14px 2px}
+  .grp-h{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 5px;display:flex;align-items:center;gap:8px}
+  .grp-h::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* atomic row: [check] [TYPE tag] [name + detail] */
+  .row{display:flex;align-items:flex-start;gap:11px;padding:7px 6px;border-radius:8px;transition:.15s}
+  .row:hover{background:rgba(255,255,255,.018)}
+  .cb{flex:0 0 auto;width:19px;height:19px;margin-top:1px;border-radius:5px;cursor:pointer;border:1.5px solid var(--ink-faint);background:#0b0908;position:relative;transition:.15s}
+  .cb:hover{border-color:var(--ember)}
+  .cb.on{border-color:var(--blood);background:linear-gradient(135deg,var(--blood),var(--blood-deep))}
+  .cb.on::after{content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;border:solid #f4e6c8;border-width:0 2.4px 2.4px 0;transform:rotate(42deg)}
+  .tag{flex:0 0 auto;width:88px;text-align:center;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;padding:3px 0;border-radius:4px;font-weight:600}
+  .txt{flex:1 1 auto;min-width:0}
+  .txt .l{font-size:15.5px}
+  .txt .m{font-size:13px;color:var(--ink-dim);margin-top:1px}
+  .txt .m b{color:var(--ember);font-weight:500}
+  .row.done .l{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:rgba(168,33,28,.6)}
+  .row.done .m{opacity:.5}
+  .row.done .tag{opacity:.45}
+
+  .t-quest{color:#e7c98a;background:rgba(200,132,46,.12);border:1px solid rgba(200,132,46,.3)}
+  .t-side{color:#8fb8e8;background:rgba(90,140,210,.14);border:1px solid rgba(90,140,210,.36)}
+  .t-stronghold{color:#e89a8a;background:rgba(168,33,28,.13);border:1px solid rgba(168,33,28,.32)}
+  .t-boss{color:#f0a0a0;background:rgba(168,33,28,.2);border:1px solid rgba(168,33,28,.45)}
+  .t-waypoint{color:#6fc9ba;background:rgba(60,170,150,.13);border:1px solid rgba(60,170,150,.34)}
+  .t-area{color:#b8c39a;background:rgba(140,160,90,.12);border:1px solid rgba(140,160,90,.3)}
+  .t-altar{color:#d0a8d8;background:rgba(170,110,190,.12);border:1px solid rgba(170,110,190,.3)}
+  .t-dungeon{color:#e6975a;background:rgba(205,110,45,.15);border:1px solid rgba(205,110,45,.38)}
+  .t-cellar{color:#cdb27c;background:rgba(190,160,90,.13);border:1px solid rgba(190,160,90,.34)}
+  .t-event{color:#a6abdd;background:rgba(120,128,210,.14);border:1px solid rgba(120,128,210,.36)}
+
+  .callout{margin:6px 6px 4px;padding:10px 13px;border-radius:8px;font-size:13px;background:rgba(200,132,46,.06);border:1px solid rgba(200,132,46,.22);color:var(--ink-dim);font-style:italic}
+  .callout b{color:var(--ember);font-style:normal}
+  .pending{margin:6px;padding:11px 13px;border-radius:8px;border:1px dashed var(--line-strong);background:repeating-linear-gradient(45deg,rgba(0,0,0,.15),rgba(0,0,0,.15) 8px,transparent 8px,transparent 16px);font-size:12.5px;color:var(--ink-faint);font-style:italic}
+  .pending b{color:var(--ink-dim);font-style:normal}
+
+  footer{max-width:860px;margin:30px auto 0;padding:18px;font-size:12.5px;color:var(--ink-faint);text-align:center;border-top:1px solid var(--line);font-style:italic}
+
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)}
+  .ov.show{display:flex}
+  .modal{background:var(--panel2);border:1px solid var(--line-strong);border-radius:12px;padding:22px;max-width:340px;text-align:center;box-shadow:var(--shadow)}
+  .modal p{margin:0 0 16px;font-size:15px}
+  .modal .m-row{display:flex;gap:10px;justify-content:center}
+  .modal.wide{max-width:520px;width:92vw;text-align:left}
+  .modal.wide p{font-size:13.5px;line-height:1.5;color:var(--ink-dim)}
+  .modal textarea{width:100%;height:168px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.45;color:var(--ink);background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;padding:10px;margin-bottom:12px;box-sizing:border-box}
+  .modal textarea:focus{outline:none;border-color:var(--ember)}
+  .bkmsg{margin:10px 0 0;min-height:16px;font-size:12.5px;text-align:center;color:var(--ink)}
+  .l .drop{display:inline-block;margin-left:8px;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#e6b07a;background:rgba(230,151,90,.12);border:1px solid rgba(230,151,90,.4);border-radius:999px;padding:1px 7px;vertical-align:middle;white-space:nowrap}
+  .l .bug{display:inline-block;margin-left:8px;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#f0a0a0;background:rgba(240,120,120,.12);border:1px solid rgba(240,120,120,.45);border-radius:999px;padding:1px 7px;vertical-align:middle;white-space:nowrap}
+  .alert{margin:8px 0;padding:11px 13px;border:1px solid rgba(230,120,90,.5);border-left:3px solid #e0785a;border-radius:8px;background:rgba(224,120,90,.10);color:var(--ink);font-size:13px;line-height:1.55}
+  .divider{display:flex;align-items:center;gap:10px;margin:18px 4px 8px;color:var(--ember);font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700}
+  .divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent)}
+  .suphead{display:flex;align-items:center;gap:12px;margin:24px 2px 12px;color:var(--ember);font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:800}
+  .suphead:first-child{margin-top:6px}
+  .suphead::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent)}
+  .flownote{margin:14px 2px 4px;padding:10px 12px;border:1px dashed var(--line-strong);border-radius:8px;color:var(--ink-dim);font-size:12.5px;line-height:1.5}
+  .mrow{display:flex;flex-wrap:wrap;gap:4px 0;margin:4px 0 2px}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-dim);line-height:1.4}
+  .pill+.pill{margin-left:8px}
+  .pill svg{width:11px;height:11px;flex:0 0 auto;fill:none;stroke:var(--ember);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .alert b{color:#f0b49a}
+  .loading{text-align:center;padding:60px 20px;color:var(--ink-dim);font-style:italic;font-size:15px}
+  .loading .flame{font-size:30px;animation:flick 1.4s infinite alternate}
+  @keyframes flick{from{opacity:.4;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
+</style>
+
+<header>
+  <div class="hbar">
+    <h1>Diablo IV — 100% Path</h1>
+    <div class="hbar-right">
+      <div class="save" id="save"><span class="dot"></span><span id="saveTxt">Loading…</span></div>
+      <div class="menu-wrap">
+        <button class="ham" id="hamBtn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <div class="menu" id="menu" hidden>
+          <button class="menu-item" id="backupBtn">Backup</button>
+          <button class="menu-item" id="restoreBtn">Restore</button>
+          <button class="menu-item danger" id="resetBtn">Reset progress</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="overall">
+    <div class="obar"><div class="ofill" id="ofill"></div></div>
+    <div class="ometa"><span id="oCount">—</span><span id="oPct">0%</span></div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="campaign">1 · Campaign</button>
+    <button class="tab" data-tab="regions">2 · Regions</button>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <div class="loading"><div class="flame">🔥</div><div>Lighting the braziers…</div></div>
+</main>
+
+<footer>Base game (Prologue · Acts I–VI · Epilogue) · Vessel of Hatred (Nahantu) · Lord of Hatred coming soon · progress saves automatically and persists after you close the app.</footer>
+
+<div class="ov" id="ov">
+  <div class="modal">
+    <p id="ovMsg">Reset all progress?</p>
+    <div class="m-row"><button class="btn" id="ovNo">Cancel</button><button class="btn danger" id="ovYes">Yes, reset</button></div>
+  </div>
+</div>
+
+<div class="ov" id="bk">
+  <div class="modal wide">
+    <p id="bkTitle"></p>
+    <textarea id="bkText" spellcheck="false"></textarea>
+    <div class="m-row"><button class="btn" id="bkClose">Close</button><button class="btn" id="bkAction"></button></div>
+    <p id="bkMsg" class="bkmsg"></p>
+  </div>
+</div>
+
+<script>
+/* ===== DATA — atomic named items. type => tag. Verified only; gaps flagged. ===== */
+const TAGLABEL={quest:"Quest",side:"Side Quest",waypoint:"Waypoint",dungeon:"Dungeon",stronghold:"Stronghold",boss:"World Boss",altar:"Altar",area:"Area",cellar:"Cellar",event:"Event"};
+const DATA=[
+  {
+    id:"prologue", head:"Base Game", title:"Prologue — “Wandering”", sub:"8 campaign quests · Nevesk → Kyovashad", lvl:"Lvl 1",
+    groups:[
+      {h:"Campaign spine (in order)", items:[
+        {id:"q-dusk", type:"quest", name:"Dusk on the Mountain", m:"Opening quest — defend <b>Nevesk</b>."},
+        {id:"q-darkness", type:"quest", name:"Darkness Within", m:"Delve the Icehowl Ruins and slay X'fal."},
+        {id:"q-heroreturn", type:"quest", name:"A Hero's Return", m:"Return to Nevesk to regroup with Vani."},
+        {id:"q-heroreward", type:"quest", name:"A Hero's Reward", m:"Cut down the maddened villagers; meet Iosef and take the chapel key."},
+        {id:"q-prayers", type:"quest", name:"Prayers for Salvation", m:"Enter the Nevesk chapel and inspect the blood petals."},
+        {id:"q-answers", type:"quest", name:"In Search of Answers", m:"Search the hermit's cabin and examine the Strange Skull — you meet Lorath."},
+        {id:"q-rite", type:"quest", name:"Rite of Passage", m:"The cleansing ritual at <b>Kyovashad's</b> gate (Lorath)."},
+        {id:"q-missing", type:"quest", name:"Missing Pieces", m:"Completing the Prologue opens Acts I / II / III."},
+      ]},
+    ]
+  },
+  {
+    id:"acts16", title:"Act I – VI", lvl:"Lvl ~1–50",
+    groups:[
+      {h:"Act I — “A Cold and Iron Faith”", items:[
+{id:"a1-01", type:"quest", name:"Ill Tidings", m:"Act I begins in <b>Kyovashad</b>."},
+        {id:"a1-02", type:"quest", name:"Tarnished Luster", m:"Travel to Yelesna's Knight's Garrison; speak with Captain Ankers."},
+        {id:"a1-03", type:"quest", name:"The Knight and the Magpie", m:"Join Vigo at the Pine Hill mining camp; clear ghouls to the Sealed Gate."},
+        {id:"a1-04", type:"quest", name:"Undertaking", m:"Pursue Lilith and Vhenard through the Condemned Mines."},
+        {id:"a1-05", type:"quest", name:"Below", m:"Descend with Vigo and Neyrelle; get the Ore Hoist working."},
+        {id:"a1-06", type:"quest", name:"In Her Wake", m:"Open the gates of Kasama, tracking Lilith with Neyrelle."},
+        {id:"a1-07", type:"quest", name:"Storming the Gates", m:"Storm the Cradle, slay Rohaksa, and push to the Mourning Shore."},
+        {id:"a1-08", type:"quest", name:"The Cost of Knowledge", m:"Confront Vhenard's demonic servants on Lilith's trail."},
+        {id:"a1-09", type:"quest", name:"Light's Guidance", m:"Report back to Reverend Mother Prava at the Cathedral of Light."},
+        {id:"a1-10", type:"quest", name:"Kor Valar", m:"Heads to the <b>Kor Valar</b> monastery region (NW)."},
+        {id:"a1-11", type:"quest", name:"Pilgrimage", m:"Undertake the pilgrimage to the Shrine of the Penitent."},
+        {id:"a1-12", type:"quest", name:"Light's Judgement", m:"Enter the Alabaster Monastery."},
+        {id:"a1-13", type:"quest", name:"Light's Protection", m:"Return to Reverend Mother Prava with what you've learned."},
+        {id:"a1-14", type:"quest", name:"Wayward", m:"Search for the missing Neyrelle."},
+        {id:"a1-15", type:"quest", name:"Shroud of the Horadrim", m:"Cross the Darkened Holt to the Horadric path; examine the Three-Faced Statue."},
+        {id:"a1-16", type:"quest", name:"Fledgling Scholar", m:"Explore the Horadric Vault with Neyrelle; slay Tchort for the spellbook."},
+        {id:"a1-17", type:"quest", name:"Crossing Over", m:"Return to the Black Lake with Neyrelle."},
+        {id:"a1-18", type:"quest", name:"Descent", m:"Descend the Necropolis of the Firstborn and defeat Lilith's Lament."},
+        {id:"a1-19", type:"quest", name:"Light's Resolve", m:"Closes Act I."},
+      ]},
+      {h:"Act II — “The Knife Twists Again”", items:[
+{id:"a2-01", type:"quest", name:"An Unforeseen Visit", m:"Act II begins — travel to <b>Cerrigar</b> in Scosglen."},
+        {id:"a2-02", type:"quest", name:"Dark Omens", m:"Investigate Firebreak Manor and fend off the goatmen."},
+        {id:"a2-03", type:"quest", name:"Encroaching Shadows", m:"Track Lilith near Braestaig with Yorin; defend the Weeping Cairns."},
+        {id:"a2-04", type:"quest", name:"Exhuming the Forgotten", m:"Cross the Weeping Cairns with Yorin; defeat the Vengeful Wildwood."},
+        {id:"a2-05", type:"quest", name:"Harrowed Lament", m:"Hunt the Risen Remains around Clocheen for Airidah."},
+        {id:"a2-06", type:"quest", name:"Apex of Misery", m:"Confront and defeat Airidah atop Solitude."},
+        {id:"a2-07", type:"quest", name:"Parting Embers", m:"Regroup with Yorin in Braestaig."},
+        {id:"a2-08", type:"quest", name:"Feral Nature", m:"Seek the druid Nafain at the Boglann Stone Circle."},
+        {id:"a2-09", type:"quest", name:"The Beast Within", m:"Follow Nafain's wolf into the Heart of the Moors."},
+        {id:"a2-10", type:"quest", name:"The Path of Rage", m:"Clear the corruption choking the Untamed Thicket."},
+        {id:"a2-11", type:"quest", name:"Fangs of Corruption", m:"Enter the Thicket to stop the Amalgam of Rage being born."},
+        {id:"a2-12", type:"quest", name:"Stemming the Flow", m:"Return to Nafain."},
+        {id:"a2-13", type:"quest", name:"Buried Secrets", m:"Return to a besieged Eldhaime Keep; search for survivors."},
+        {id:"a2-14", type:"quest", name:"In Ruins", m:"Fight through to the Great Hall to reach Donan."},
+        {id:"a2-15", type:"quest", name:"Entombed Legacy", m:"Escort Donan to Astaroth's tomb."},
+        {id:"a2-16", type:"quest", name:"Shadow Over Cerrigar", m:"Enter Lower Cerrigar as the demon assault begins."},
+        {id:"a2-17", type:"quest", name:"As the World Burns", m:"Closes Act II."},
+      ]},
+      {h:"Act III — “The Making of Monsters”", items:[
+{id:"a3-01", type:"quest", name:"The Spreading Darkness", m:"Act III — into the <b>Dry Steppes</b>."},
+        {id:"a3-02", type:"quest", name:"Whittling Sanity", m:"Hunt Elias in Abahru Canyon; slay Genbar the Shrine-Keeper."},
+        {id:"a3-03", type:"quest", name:"Suffering Disquiet", m:"Search Orbei Monastery and slay the Eidolon of Orbei."},
+        {id:"a3-04", type:"quest", name:"A Moment to Collect", m:"Rejoin Lorath in Ked Bardu for a grim autopsy."},
+        {id:"a3-05", type:"quest", name:"Brought Low", m:"Meet Lorath overlooking ruined Guulrahn."},
+        {id:"a3-06", type:"quest", name:"The City of Blood and Dust", m:"Reaches <b>Ked Bardu</b>."},
+        {id:"a3-07", type:"quest", name:"Small Blessings", m:"Escort Oyuun safely to Zolaya."},
+        {id:"a3-08", type:"quest", name:"Whispers from the Past", m:"Infiltrate the palace via the Offal Pits; slay Mother's Judgment."},
+        {id:"a3-09", type:"quest", name:"Through the Dark Glass", m:"Earn the Prime Evils' blessings in the Vision of Sescheron."},
+        {id:"a3-10", type:"quest", name:"Descent Into Flame", m:"Enter the Temple of the Primes; slay Tyrant King Brol."},
+        {id:"a3-11", type:"quest", name:"Loose Threads", m:"Meet the mysterious woman, Taissa."},
+        {id:"a3-12", type:"quest", name:"Oasis of Memories", m:"Find a guide in Tarsarak's hidden drug den."},
+        {id:"a3-13", type:"quest", name:"Flesh from Bone", m:"Brave the sandstorm with Meshif; protect Isabella."},
+        {id:"a3-14", type:"quest", name:"Beneath the Mask", m:"Find a way into the Exalted Terrace."},
+        {id:"a3-15", type:"quest", name:"Piercing the Veil", m:"Confront Elias and seize the Sightless Eye."},
+        {id:"a3-16", type:"quest", name:"Exhumed Relics", m:"Closes Act III."},
+      ]},
+      {h:"Act IV — “A Gathering Storm”", items:[
+{id:"a4-01", type:"quest", name:"Prying the Eye", m:"Act IV — <b>Kehjistan</b>; rallies allies against Lilith & Elias."},
+        {id:"a4-02", type:"quest", name:"A Master’s Touch", m:"Reunite with Donan the Elder at the Cathedral of Light."},
+        {id:"a4-03", type:"quest", name:"Lost Arts", m:"Guard Donan in the Mistral Woods Horadric Vault."},
+        {id:"a4-04", type:"quest", name:"A Meeting of the Minds", m:"Gather the Horadrim at the Forsaken Chapel."},
+        {id:"a4-05", type:"quest", name:"Anguish Incarnate", m:"Defeat Andariel, Maiden of Anguish."},
+        {id:"a4-06", type:"quest", name:"Eye of the Storm", m:"Closes Act IV."},
+      ]},
+      {h:"Act V — “Secrets Bartered, Fates Sold”", items:[
+{id:"a5-01", type:"quest", name:"The Path Divided", m:"Act V — the <b>Hawezar</b> swamp; meet the Tree of Whispers."},
+        {id:"a5-02", type:"quest", name:"Secrets of the Zakarum", m:"Break into the Zakarum Keep with Donan."},
+        {id:"a5-03", type:"quest", name:"Entombed Hatred", m:"Reach the Black Tomb of Sankekur; destroy the Manifestation of Hate."},
+        {id:"a5-04", type:"quest", name:"Swamp Hospitality", m:"Find Donan in Wejinhani."},
+        {id:"a5-05", type:"quest", name:"Witch of the Wastes", m:"Slay the witch Valtha for her Purified Quicksilver."},
+        {id:"a5-06", type:"quest", name:"Encumbered Mind", m:"Help Donan begin repairing the soulstone."},
+        {id:"a5-07", type:"quest", name:"The Cage of Grief", m:"Brew the swamp ritual; slay the Maggot Queen."},
+        {id:"a5-08", type:"quest", name:"One Step Forward", m:"Continue Donan's soulstone work."},
+        {id:"a5-09", type:"quest", name:"Tainted Flesh", m:"Seek the seer Timue with Lorath and Neyrelle."},
+        {id:"a5-10", type:"quest", name:"Wrack & Ruin", m:"Recover the temple's two Eyes in ruined Yngovani."},
+        {id:"a5-11", type:"quest", name:"Cold Blood", m:"Slay Mohlon the Snake Queen for the Mystic Incense."},
+        {id:"a5-12", type:"quest", name:"Judgment of the Swamp", m:"Slay the Nangari and light the incense."},
+        {id:"a5-13", type:"quest", name:"The Serpentine Path", m:"Follow the great serpent with Neyrelle."},
+        {id:"a5-14", type:"quest", name:"Dirge of the Mire", m:"Cross the mire; destroy the Wailing Soul."},
+        {id:"a5-15", type:"quest", name:"The Slow, Beating Heart", m:"Commune with the Tree of Whispers."},
+        {id:"a5-16", type:"quest", name:"A Cold and Lifeless Shore", m:"Search the shipwrecks on the eastern shore."},
+        {id:"a5-17", type:"quest", name:"Picking Through the Bones", m:"Reach the sunken coffin; rescue Neyrelle."},
+        {id:"a5-18", type:"quest", name:"Beneath the Wine-Dark Sea", m:"The coffin voyage to <b>Epiphysis</b>."},
+        {id:"a5-19", type:"quest", name:"Fragments of Mortality", m:"Burn Elias' finger to break his immortality."},
+        {id:"a5-20", type:"quest", name:"On the Precipice", m:"Corner and slay the now-mortal Elias."},
+        {id:"a5-21", type:"quest", name:"Knee-Deep in Filth", m:"Track Elias through the Plaguemarsh with Taissa."},
+        {id:"a5-22", type:"quest", name:"A Chorus of Voices", m:"Closes Act V."},
+      ]},
+      {h:"Act VI — “Dance of the Makers”", items:[
+{id:"a6-01", type:"quest", name:"Evil Stirs in Kehjistan", m:"Act VI — meet Lorath & Donan at <b>Tarsarak</b>; unlocks <b>Caldeum</b>."},
+        {id:"a6-02", type:"quest", name:"The Jewel of the East", m:"Enter Caldeum via the Eastern Gate."},
+        {id:"a6-03", type:"quest", name:"The Scouring of Caldeum", m:"Fight through demon-besieged Caldeum."},
+        {id:"a6-04", type:"quest", name:"The Walls Shake", m:"Breach the Imperial Palace; defeat Duriel."},
+        {id:"a6-05", type:"quest", name:"Turning the Tide", m:"Descend toward the Gates of Hell."},
+        {id:"a6-06", type:"quest", name:"Essence of Hatred", m:"Enter the Burning Hells; recover Mother Prava."},
+        {id:"a6-07", type:"quest", name:"In Desolation’s Wake", m:"Cross the Realm of Hatred; defeat Karum and Ashava."},
+        {id:"a6-08", type:"quest", name:"Light Extinguished", m:"Reach the Spire of Torment; use the Sightless Eye."},
+        {id:"a6-09", type:"quest", name:"The Blind Eye", m:"Walk Lilith's nightmare vision."},
+        {id:"a6-10", type:"quest", name:"What Lies Ahead", m:"The confrontation with <b>Lilith</b> — final base-game story quest."},
+      ]}
+    ]
+  },
+  {
+    id:"epilogue2", title:"Epilogue — “From the Wound Spilled”", sub:"3 campaign quests · loose ends across Sanctuary", lvl:"End",
+    groups:[
+      {h:"Campaign spine (in completion order)", items:[
+        {id:"ep-01", type:"quest", name:"Promises", m:"Stand with Lorath against the Knights Penitent."},
+        {id:"ep-02", type:"quest", name:"A Heavy Burden", m:"Search the Horadric Vault for Neyrelle's letter."},
+        {id:"ep-03", type:"quest", name:"Legacy of the Horadrim", m:"Ends the base-game campaign."},
+      ]},
+    ]
+  },
+  {
+    id:"vohcampaign", head:"Vessel of Hatred", title:"Chapter 1 – 4", lvl:"Act VII",
+    groups:[
+      {h:"Chapter 1 · The Art of Salvaging What Remains", items:[
+        {id:"vc-01", type:"quest", name:"Rekindled Faith", m:"Answer the tolling bells at the Cathedral of Light; meet Olya."},
+        {id:"vc-02", type:"quest", name:"A Fist of Fire", m:"Train under Urivar, clearing the way for Eoren and Lyza."},
+        {id:"vc-03", type:"quest", name:"Pursuit of Justice", m:"Investigate Lorath's burned cabin; face the Burned Knight Captain."},
+        {id:"vc-04", type:"quest", name:"A Magpie in Flight", m:"Follow the trail to Gea Kul and seek out the blacksmith Raheir."},
+        {id:"vc-05", type:"quest", name:"Enmity Rising", m:"Purge the Hollow Defilements spreading around Gea Kul."},
+      ]},
+      {h:"Chapter 2 · The Wound Heals, The Pain Lingers", items:[
+        {id:"vc-06", type:"quest", name:"Thrust Into the Dark", m:"Wake in Nahantu; follow the Spiritborn Eru toward the Den."},
+        {id:"vc-07", type:"quest", name:"The Hand Remembers the Blade", m:"Delve the Den beneath Nahantu with Raheir."},
+        {id:"vc-08", type:"quest", name:"A Path Laid in Blood", m:"Search for Neyrelle; investigate the tendril-touched boatman."},
+        {id:"vc-09", type:"quest", name:"Unknowing Survivors", m:"Reach the Kurast Docks and examine the Madman's Archive."},
+        {id:"vc-10", type:"quest", name:"Reaching Through the Veil", m:"Cleanse the poison at the Onucha Ikha Burial."},
+        {id:"vc-11", type:"quest", name:"A Flickering Light", m:"Guard Eru and light the beacons through Travincal."},
+        {id:"vc-12", type:"quest", name:"The Heart of All Rot", m:"Clear the Durance of Hate alongside Eru."},
+        {id:"vc-13", type:"quest", name:"To Kurast", m:"Press on into the city of Kurast."},
+        {id:"vc-14", type:"quest", name:"Madman, Crowned", m:"Seek the council in Kurast; meet Ormus."},
+        {id:"vc-15", type:"quest", name:"Fundament of Faith", m:"Search the Kurast Sewers, complete the mosaic, and return to Ormus."},
+      ]},
+      {h:"Chapter 3 · Darkening Clouds", items:[
+        {id:"vc-16", type:"quest", name:"Darkening Clouds", m:"Travel to Wekenga; a ritual brings you face to face with Mephisto."},
+        {id:"vc-17", type:"quest", name:"Forgotten Gods", m:"Study Nahantu's cave paintings for Ah Bulan with Maka."},
+        {id:"vc-18", type:"quest", name:"Across the Threshold", m:"Cross into the Spirit Realm; defeat the corrupted Ah Bulan."},
+        {id:"vc-19", type:"quest", name:"A Deeper Sickness", m:"Delve deeper into the Durance of Hate with Akarat's aid."},
+        {id:"vc-20", type:"quest", name:"Fragile Blessings", m:"Use Ah Bulan's heart to free Neyrelle from Mephisto's grip."},
+        {id:"vc-21", type:"quest", name:"Reunion", m:"Reunite with Neyrelle and regroup at Kurast."},
+        {id:"vc-22", type:"quest", name:"Living Memory", m:"Recover Akarat's hidden tablets around Pilgrim's Vista."},
+        {id:"vc-23", type:"quest", name:"Burning Crusade", m:"Storm the Burned Knights' camp; defeat Urivar."},
+      ]},
+      {h:"Chapter 4 · False Prophets, Fallen Saints", items:[
+        {id:"vc-24", type:"quest", name:"The Way Out is Through", m:"Escort Neyrelle through the Tangles toward Samuk."},
+        {id:"vc-25", type:"quest", name:"Perspective", m:"Find Akarat's three faces in Samuk to reveal his tomb."},
+        {id:"vc-26", type:"quest", name:"In His Footsteps", m:"Perform the ritual and escort Neyrelle to the Tomb of Akarat."},
+        {id:"vc-27", type:"quest", name:"All Good Things", m:"Pass Akarat's trials and defeat the Harbinger of Hatred."},
+        {id:"vc-28", type:"quest", name:"Catharsis", m:"In the aftermath, track Eru by a blood trail with Neyrelle."},
+        {id:"vc-29", type:"quest", name:"To Walk a Different Path", m:"At the Horadric Vault, seek clues on Lorath and Rathma's Prophecy."},
+        {id:"vc-30", type:"quest", name:"Presaging Fate", m:"Return to the Windswept Cabin to speak with Prava."},
+      ]}
+    ]
+  },
+  {
+    id:"vohepilogue", title:"Epilogue", lvl:"Act VII",
+    groups:[
+      {h:"Epilogue", items:[
+        {id:"vc-31", type:"quest", name:"Deeds of a Champion", bug:1, bugmsg:"Doesn't auto-pop: after Presaging Fate (Prava at the Windswept Cabin), the messenger Kalien appears just OUTSIDE Lorath's house in Fractured Peaks — easy to ride past. Also a reported bug (May 2026): Kalien sometimes doesn't spawn at all, even after finishing LoH. Relog/restart, re-check the cabin, or go talk to Ormus at Kurast Bazaar directly.", m:"Starts via KALIEN outside Lorath's Windswept Cabin (Fractured Peaks) right after Presaging Fate — NOT in Kurast. He sends you to Ormus at Kurast Bazaar, who assigns the endgame checklist: all mercenaries, Kichuk + Tenets of Depravity + 3 Nahantu dungeons, Undercity (slay the Terror of Five Hills), 10 Grim Favors → Tree of Whispers, Helltide gifts + Blood Maiden, then Pit Tier 20. Steps you've already done auto-complete."},
+      ]}
+    ]
+  },
+  {
+    id:"lohcampaign", head:"Lord of Hatred", title:"Chapter 1 – 6", lvl:"LoH Campaign",
+    groups:[
+      {h:"Chapter 1 · The False Prophet", items:[
+        {id:"lc-01", type:"quest", name:"Solace Beyond Sight", m:"Ked Bardu: meet Lorath and search the Yshari Archive for Neyrelle's findings."},
+        {id:"lc-02", type:"quest", name:"Last of the Horadrim", m:"Reach Backwater; Lorath entrusts you with the Horadric Talisman."},
+        {id:"lc-03", type:"quest", name:"Hatred's Wake", m:"Survive the ship voyage to Skovos; defeat the Calamitous Crab."},
+        {id:"lc-04", type:"quest", name:"Crown of the Twin Seas", m:"Cross the Skovos Isles to find the way into Temis."},
+        {id:"lc-05", type:"quest", name:"Between Heaven and Hell", m:"Infiltrate Temis; trail a Hand of Akarat toward the sewers."},
+        {id:"lc-06", type:"quest", name:"Subterranean Secrets", m:"Clear the Temis Sewers and expose the Hands of Akarat."},
+        {id:"lc-07", type:"quest", name:"The Queen and the Saint", m:"Confront Queen Adreona with the truth: the saint is Mephisto."}
+      ]},
+      {h:"Chapter 2 · To Walk with Two Shadows", items:[
+        {id:"lc-08", type:"quest", name:"What's Yet Unseen", m:"Chapter 2 begins: with Adreona warned, dig into what Mephisto's deception still hides."},
+        {id:"lc-09", type:"quest", name:"In the Shadow of Another", m:"Pursue the figure hiding behind the false Akarat."},
+        {id:"lc-10", type:"quest", name:"She Sleeps Within You", m:"Face what 'sleeps within' — the corruption Mephisto preys upon."},
+        {id:"lc-11", type:"quest", name:"Tipped Scales", m:"Turn the balance against the Hands of Akarat."},
+        {id:"lc-12", type:"quest", name:"Quelling Hatred", m:"Beat back the hatred spreading through Skovos."},
+        {id:"lc-13", type:"quest", name:"The Hellborne Grove", m:"Cleanse a grove twisted by hellish corruption."},
+        {id:"lc-14", type:"quest", name:"Along the Crimson Trail", m:"Follow a trail of blood deeper into Mephisto's scheme."},
+        {id:"lc-15", type:"quest", name:"What Was Given", m:"Reckon with a gift and the price it carries."},
+        {id:"lc-16", type:"quest", name:"Mother's Guidance", m:"Seek a mother's counsel on Skovos."},
+        {id:"lc-17", type:"quest", name:"A Devil in the Garden", m:"Root out a devil hidden within hallowed ground."},
+        {id:"lc-18", type:"quest", name:"Hands Stained Red", m:"Confront the bloodstained Hands of Akarat."},
+        {id:"lc-19", type:"quest", name:"Seed of Hatred", m:"Strike at the root of Mephisto's growing hatred."},
+        {id:"lc-20", type:"quest", name:"Those Who Remain", m:"Stand with the survivors of Skovos."},
+        {id:"lc-21", type:"quest", name:"A Blade's Weight", m:"Take up the weapon being forged to banish Mephisto."},
+        {id:"lc-22", type:"quest", name:"In Rathma's Footsteps", m:"Walk the path of Rathma, firstborn of Lilith and Inarius."},
+        {id:"lc-23", type:"quest", name:"The Path of Riddles", m:"Solve the Time-Worn Statue riddles in the Labyrinthine Grove to claim a blade fragment."},
+        {id:"lc-24", type:"quest", name:"A Door Was Opened", m:"A path opens toward Mephisto's seat of power."},
+        {id:"lc-25", type:"quest", name:"The Soil, The Seed, The Fruit", m:"Confront the cycle of corruption at its source."},
+        {id:"lc-26", type:"quest", name:"The Rising Tide", m:"Hold against the rising tide of Hatred's forces."},
+        {id:"lc-27", type:"quest", name:"Threadbare Legacy", m:"Follow the threads of the Horadrim's legacy."},
+        {id:"lc-28", type:"quest", name:"Wounded Souls"},
+        {id:"lc-29", type:"quest", name:"Scattered to the Winds"},
+        {id:"lc-30", type:"quest", name:"The Queen's Castaways"},
+        {id:"lc-31", type:"quest", name:"The Hateborn Sea"},
+        {id:"lc-32", type:"quest", name:"Breaking the Storm"},
+        {id:"lc-33", type:"quest", name:"Glint of Light"}
+      ]},
+      {h:"Chapter 3 · Sins and Secrets", items:[
+        {id:"lc-34", type:"quest", name:"Faith and Failings"}
+      ]},
+      {h:"Chapter 4 · When Sun and Moon Converge", items:[
+        {id:"lc-35", type:"quest", name:"Fate Laughs at Us All"},
+        {id:"lc-36", type:"quest", name:"On the Hunt"},
+        {id:"lc-37", type:"quest", name:"A Withering Curse"},
+        {id:"lc-38", type:"quest", name:"The Void"},
+        {id:"lc-39", type:"quest", name:"Embers at Twilight"},
+        {id:"lc-40", type:"quest", name:"The Land of Fire"},
+        {id:"lc-41", type:"quest", name:"Some Fall, Some Jump"},
+        {id:"lc-42", type:"quest", name:"A Still-Beating Heart"},
+        {id:"lc-43", type:"quest", name:"The Needle's Path"},
+        {id:"lc-44", type:"quest", name:"Doorways to the Distant Past"},
+        {id:"lc-45", type:"quest", name:"The Scribe"},
+        {id:"lc-46", type:"quest", name:"The Watchman"},
+        {id:"lc-47", type:"quest", name:"The Luminary"},
+        {id:"lc-48", type:"quest", name:"The Initiate"},
+        {id:"lc-49", type:"quest", name:"Horadrim"},
+        {id:"lc-50", type:"quest", name:"Death"},
+        {id:"lc-51", type:"quest", name:"One Eye Closes, One Eye Opens"},
+        {id:"lc-52", type:"quest", name:"The Fools"},
+        {id:"lc-53", type:"quest", name:"Smothered Flame"}
+      ]},
+      {h:"Chapter 5 · Breaking the Cycle", items:[
+        {id:"lc-54", type:"quest", name:"The Age of Hatred"},
+        {id:"lc-55", type:"quest", name:"Delivering a Promise", m:"Go with Tyrael to open the way into the Pools of Creation."},
+        {id:"lc-56", type:"quest", name:"Lord of Hatred", m:"Pools of Creation → find Akarat at the Birthplace; wound him with Lilith's blade and defeat Mephisto."},
+        {id:"lc-57", type:"quest", name:"A New Beginning"}
+      ]},
+      {h:"Chapter 6 · And the Chains Fall Away", items:[
+        {id:"lc-58", type:"quest", name:"No Gods, No Masters", m:"Chapter 6 · the saga's final quest."}
+      ]}
+    ]
+  },
+  {
+    id:"fp", head:"Base Game", title:"Fractured Peaks", sub:"Loop clockwise from Kyovashad · in-game Renown: 7 WP · 3 SH · 38 SQ · 23 DG", lvl:"Lvl ~1–15",
+    groups:[
+      {h:"Waypoints · 7 total", items:[
+        {id:"wp-kyovashad", type:"waypoint", name:"Kyovashad", m:"Capital hub (Desolate Highlands, NE) — unlocks on entering the city in the Prologue."},
+        {id:"wp-nevesk", type:"waypoint", name:"Nevesk", m:"Western FP · near Lost Archives / Defiled Catacomb / Tormented Ruins."},
+        {id:"wp-menestad", type:"waypoint", name:"Menestad", m:"Central / NW approach."},
+        {id:"wp-yelesna", type:"waypoint", name:"Yelesna", m:"Gale Valley (SE) · visited during Act I."},
+        {id:"wp-margrave", type:"waypoint", name:"Margrave", m:"South-central; jump-off toward Hawezar later."},
+        {id:"wp-bear", type:"waypoint", name:"Bear Tribe Refuge", m:"Northern FP · staging point for Kor Dragan & Malnok."},
+        {id:"wp-nostravawp", type:"waypoint", name:"Nostrava", m:"Unlocks after the Nostrava Stronghold is cleared."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"sh-nostrava", type:"stronghold", name:"Nostrava", m:"Pallid Glade (SW), Lvl ~20 · destroy 5 Demonic Effigies, beat <b>Negala, Lilith's Chosen</b>. Unlocks the Nostrava Waypoint + a gated dungeon."},
+        {id:"sh-malnok", type:"stronghold", name:"Malnok", m:"East of Kyovashad, Lvl ~20 · defeat the <b>Ice Clan Stormcallers</b>."},
+        {id:"sh-kordragan", type:"stronghold", name:"Kor Dragan", m:"Northwest, Lvl ~25 · vampire stronghold; clearing it unlocks the <b>Gathering Legions</b> zone event."},
+      ]},
+      {h:"Side Quests · 38 total (all named) · in powerpyx map order", items:[
+        {id:"sq-menestadcoffers", type:"side", name:"Menestad Coffers", loc:"Kyovashad", npc:"Kudomyla", m:"Search Sarkova Pass for the Monk."},
+        {id:"sq-raising", type:"side", name:"Raising Spirits", loc:"Kyovashad", npc:"Guard Boza", m:"Use the Cheer gesture at the recruits."},
+        {id:"sq-sealeddoor", type:"side", name:"The Sealed Door", loc:"Kyovashad · lvl 15+", npc:"Strange Beggar", m:"Frigid Expanse, slay the Khazra at the sealed door."},
+        {id:"sq-woodsman", type:"side", name:"The Woodsman of Nevesk", loc:"Nevesk", npc:"Madalena", m:"Boulder Ridge, take the axe, kill The Woodsman."},
+        {id:"sq-malady", type:"side", name:"Malady of the Soul", loc:"Kyovashad · Cathedral of Light", npc:"Sister Octavia", m:"Cellar, kill Xul'Goth."},
+        {id:"sq-depths", type:"side", name:"Depths of Despair", loc:"Kyovashad · after Malady of the Soul", npc:"Sister Octavia", m:"Kyovashad Sewers, kill Demotath."},
+        {id:"sq-faith", type:"side", name:"Faith in Blood", loc:"Kyovashad · after Depths of Despair", npc:"Petr"},
+        {id:"sq-sight", type:"side", name:"Sight to Madness", loc:"Kyovashad · after Act I", npc:"Vilek", m:"Clear Nostrava, then Cultist Refuge dungeon, kill Theya."},
+        {id:"sq-bloodmother", type:"side", name:"Blood of the Mother", loc:"Kyovashad · Post-campaign", npc:"Voszalko", m:"Travel to Nevesk and find Voszalko — he can be by the barn, along the roads in, or north near the dungeon."},
+        {id:"sq-shroudfather", type:"side", name:"Shroud of the Father", loc:"Post-campaign", chain:"Auto-follows Blood of the Mother", m:"Mercy's Reach dungeon for The Child's Caul → back to Voszalko."},
+        {id:"sq-severing", type:"side", name:"Severing the Bond", loc:"Post-campaign", chain:"Auto-follows Shroud of the Father", m:"Elysiuma Archives, use the chalice. Final step of the Voszalko chain."},
+        {id:"sq-coldfaith", type:"side", name:"A Cold Faith", loc:"Southeast Foothills", npc:"Pilgrim's Journal", m:"Margrave, speak to the man."},
+        {id:"sq-cleansing", type:"side", name:"The Cleansing Flame", loc:"Margrave", npc:"Priest Matvey", m:"Light the Ashen Hollow brazier, clear the horde."},
+        {id:"sq-bound", type:"side", name:"Bound by Blood", loc:"Margrave", npc:"Lacthan", m:"Cutthroat's Escape, kill the Outlaw Sharpshooter."},
+        {id:"sq-legacies", type:"side", name:"Legacies of Light's Watch", loc:"Margrave", npc:"Zalan Coste", m:"Light's Watch dungeon, recover the three journals."},
+        {id:"sq-betterdays", type:"side", name:"Better Days", drop:1, m:"Loot the Faded Old Painting from corpses east of Margrave → Zalan Coste."},
+        {id:"sq-unwritten", type:"side", name:"Unwritten End", drop:1, m:"Loot the Merchant's Ledger from Bandits east of Margrave → Zalan Coste."},
+        {id:"sq-ravenous", type:"side", name:"Ravenous Dead", loc:"Yelesna", npc:"Olesia", m:"Kill Ghouls north of town for 15 Ghoul Hearts."},
+        {id:"sq-travelers", type:"side", name:"Traveler's Prayer", loc:"Yelesna", npc:"Pilgrim's Letter", m:"Shrine, use the Thanks gesture."},
+        {id:"sq-unyielding", type:"side", name:"Unyielding Flesh", loc:"Yelesna", npc:"Krystyna", m:"Gnarled Timbers, kill Yulia."},
+        {id:"sq-icebound", type:"side", name:"Icebound Geode", drop:1, m:"Mine the Icebound Geode from Ore Veins in Gale Valley (after campaign) Kratia."},
+        {id:"sq-righteous", type:"side", name:"Righteous Idol", loc:"Yelesna · after Better Days · Unwritten End & the campaign", m:"Buy the Carved Wooden Knight from Tsvemir → Zalan Coste."},
+        {id:"sq-gold", type:"side", name:"Gold Well Spent", loc:"Menestad", m:"Kill Luskas."},
+        {id:"sq-chain", type:"side", name:"Chain of Possession", loc:"Menestad · after The Woodsman of Nevesk", npc:"Parin", m:"The Red Cellar, kill Magdalena."},
+        {id:"sq-legacyunmade", type:"side", name:"Legacy Unmade", chain:"Auto-follows Chain of Possession", m:"Crags of Ill Wind, kill The Woodsman again."},
+        {id:"sq-forgive", type:"side", name:"Forgive Me", m:"Loot the Bloodied Note from Julek in Kor Dragan Barracks → Roza in Menestad."},
+        {id:"sq-hungering", type:"side", name:"Hungering Bone Cache", drop:1, m:"Loot the Hungering Bone Cache from corpses in Frostbite Trails."},
+        {id:"sq-frostbloom", type:"side", name:"Frostbloom", drop:1, m:"Gather the Frostbloom from herbs in The Pallid Glade. Veroka in Kyovashad."},
+        {id:"sq-cries", type:"side", name:"Cries of Innocence", loc:"Olyam Tundra", npc:"Vendral Trost", m:"Black Asylum dungeon, kill Corik Trost."},
+        {id:"sq-martyr", type:"side", name:"The Dread Martyr", loc:"Olyam Tundra · dying Sir Cromwell", m:"Hallowed Ossuary dungeon, kill Lord Avitus."},
+        {id:"sq-spring", type:"side", name:"Secret of the Spring", loc:"Kylslik Plateau", npc:"Discarded Note", m:"Trough of Orobas, use the Wait gesture."},
+        {id:"sq-exorcist", type:"side", name:"Exorcist's Cache", drop:1, m:"Loot the Sealed Exorcist's Cache from Undead in The Deep White (Frigid Expanse) → collect spirit anima."},
+        {id:"sq-gory", type:"side", name:"Gory Display", drop:1, m:"Loot the Warrior's Chain from Khazra east of Olyam Tundra (outside Malnok) → Sena, Bear Tribe Refuge."},
+        {id:"sq-shattered", type:"side", name:"Shattered Tribute", loc:"Bear Tribe Refuge", npc:"Sena", m:"Hoarfrost Demise dungeon, gather 25 Ice Clan Bones."},
+        {id:"sq-hammer", type:"side", name:"Hammer of the Champion", loc:"Bear Tribe Refuge", npc:"Greganoch", m:"Clear Malnok, then Rimescar Cavern for the Grizzly's Maul."},
+        {id:"sq-beast", type:"side", name:"The Beast's Challenge", loc:"Bear Tribe Refuge", npc:"Greganoch"},
+        {id:"sq-ancients", type:"side", name:"Call of the Ancients", loc:"Bear Tribe Refuge · after Shattered Tribute–36", npc:"Chieftain", m:"Hallowed Glacier dungeon, kill Cyhrach the First Born."},
+        {id:"sq-bloodsermon", type:"side", name:"Blood Sermon", bug:1, bugmsg:"Needs the Kor Valar gate opened during the 'Kor Valar' main quest. After you finish the campaign, Sister Vera relocates to the Bear Tribe Refuge — look for her there, not in Kor Valar.", loc:"Kor Valar · gate opened during the 'Kor Valar' main quest", npc:"Sister Vera", m:"Enter the Sanguine Chapel dungeon and kill the Blood Bishop."},
+      ]},
+      {h:"Dungeons · 23 total · 40 Renown each", items:[
+        {id:"dg-lostarchives", type:"dungeon", name:"Lost Archives", m:"Near Nevesk (W) · Aspect of the Protector."},
+        {id:"dg-defiled", type:"dungeon", name:"Defiled Catacomb", m:"Near Nevesk (NE) · Aspect of Tempering Blows (Barb)."},
+        {id:"dg-tormented", type:"dungeon", name:"Tormented Ruins", m:"Near Nevesk (W) · Aspect of the Unsatiated (Druid)."},
+        {id:"dg-lightswatch", type:"dungeon", name:"Light's Watch", m:"Margrave · the Legacies of Light's Watch quest dungeon."},
+        {id:"dg-maulwood", type:"dungeon", name:"Maulwood", m:"Dobrev Taiga, south of Kyovashad."},
+        {id:"dg-deadmans", type:"dungeon", name:"Dead Man's Dredge", m:"Gale Valley, E of Yelesna · Aspect of Piercing Cold (Sorc)."},
+        {id:"dg-immortal", type:"dungeon", name:"Immortal Emanation", m:"Mangled Aspect (Druid)."},
+        {id:"dg-hallowed", type:"dungeon", name:"Hallowed Ossuary", m:"Olyam Tundra (E of Kyovashad) · Aspect of Unrelenting Fury (Barb) · the Dread Martyr dungeon."},
+        {id:"dg-blackasylum", type:"dungeon", name:"Black Asylum", m:"Olyam Tundra · the Cries of Innocence dungeon."},
+        {id:"dg-forsaken", type:"dungeon", name:"Forsaken Quarry", m:"Kylslik Plateau · early dungeon."},
+        {id:"dg-anica", type:"dungeon", name:"Anica's Claim", m:"Stronghold-gated — clear a Stronghold to open it."},
+        {id:"dg-rimescar", type:"dungeon", name:"Rimescar Cavern", m:"Stronghold-gated via Malnok · the Hammer of the Champion dungeon."},
+        {id:"dg-sanguine", type:"dungeon", name:"Sanguine Chapel", m:"Sarkova Pass / SE of Bear Tribe Refuge · the Blood Sermon dungeon."},
+        {id:"dg-zenith", type:"dungeon", name:"Zenith", m:"Recharging Aspect (Sorc)."},
+        {id:"dg-hoarfrost", type:"dungeon", name:"Hoarfrost Demise", m:"N of Bear Tribe Refuge (Seat of the Heavens) · the Shattered Tribute dungeon."},
+        {id:"dg-korvalar", type:"dungeon", name:"Kor Valar Ramparts", m:"Kor Valar (NE)."},
+        {id:"dg-kordragan", type:"dungeon", name:"Kor Dragan Barracks", m:"Kor Dragan · Aspect of Anemia (Barb) · the Forgive Me dungeon."},
+        {id:"dg-forbidden", type:"dungeon", name:"Forbidden City", m:"Near the Kor Dragan border · Nighthowler's Aspect (Druid)."},
+        {id:"dg-mercys", type:"dungeon", name:"Mercy's Reach", m:"Far NW by the Dry Steppes entrance · Blood Seeker's Aspect (Necro) · the Shroud of the Father dungeon."},
+        {id:"dg-caldera", type:"dungeon", name:"Caldera Gate", m:"Eluding Aspect."},
+        {id:"dg-nostrava", type:"dungeon", name:"Nostrava Deepwood", m:"The Pallid Glade / Nostrava · Flesh-Rending Aspect (Necro)."},
+        {id:"dg-derelict", type:"dungeon", name:"Derelict Lodge", m:"Aspect of Explosive Verve (Rogue)."},
+        {id:"dg-cultist", type:"dungeon", name:"Cultist Refuge", m:"NE near Kor Valar · Stronghold-gated · Flamewalker's Aspect (Sorc) · the Sight to Madness dungeon."},
+      ]},
+    ]
+  },
+  {
+    id:"scosglen", title:"Scosglen", sub:"Druid homelands · Act II · in-game Renown: 8 WP · 3 SH · 47 SQ · 25 DG", lvl:"Lvl ~15–25",
+    groups:[
+      {h:"Waypoints · 8 total", items:[
+        {id:"scwp-1", type:"waypoint", name:"Cerrigar", m:"Capital · central hub (The Emerald Chase)."},
+        {id:"scwp-2", type:"waypoint", name:"Firebreak Manor", m:"East of Westering Lowlands (story stop)."},
+        {id:"scwp-3", type:"waypoint", name:"Braestaig", m:"Wailing Hills · north of Cerrigar."},
+        {id:"scwp-4", type:"waypoint", name:"Marowen", m:"Northshore · north-west coast."},
+        {id:"scwp-5", type:"waypoint", name:"Corbach", m:"Strand · NE of Cerrigar."},
+        {id:"scwp-6", type:"waypoint", name:"Tirmair", m:"Shrouded Moors · east."},
+        {id:"scwp-7", type:"waypoint", name:"Under the Fat Goose Inn", m:"Highland Wilds · east (south of Tirmair)."},
+        {id:"scwp-8", type:"waypoint", name:"Túr Dúlra", m:"Inside the Túr Dúlra Stronghold (W) — unlocks when you clear it."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"scsh-1", type:"stronghold", name:"Túr Dúlra", m:"West · druid site · unlocks its waypoint + Underroot & Wretched Delve dungeons."},
+        {id:"scsh-2", type:"stronghold", name:"Moordaine Lodge", m:"Northeast · unlocks Twisted Hollow & Ferals' Den dungeons."},
+        {id:"scsh-3", type:"stronghold", name:"Hope's Light", m:"Far north · lighthouse · unlocks the Flooded Depths dungeon."},
+      ]},
+      {h:"Side Quests · 47 total (all named) · in powerpyx map order", items:[
+        {id:"scsq-01", type:"side", name:"Chronicling the Old Ways", loc:"Laglend Fen", npc:"Moreg", m:"Collect 3 Runic Tablets from Beasts."},
+        {id:"scsq-02", type:"side", name:"Braega's Chronicles", drop:1, m:"Loot A History of Scosglen from Khazra in Westering Lowlands → Wilfred at Firebreak Manor."},
+        {id:"scsq-03", type:"side", name:"A Plea for Aid", loc:"Firebreak Manor · after Act II progress", m:"Cerrigar, speak to Corman."},
+        {id:"scsq-04", type:"side", name:"What Ails Thee", loc:"Cerrigar", m:"Blycroft, speak to Phelan."},
+        {id:"scsq-05", type:"side", name:"The Fledgling Merchant", loc:"Cerrigar · after Act II", m:"Kill Tusked Chargers for 10 Charger Tusks."},
+        {id:"scsq-06", type:"side", name:"Blood of Brigands", loc:"Cerrigar · after Act II", m:"Kill 50 Bandits in the Emerald Chase."},
+        {id:"scsq-07", type:"side", name:"Daughter of the Oak", loc:"Cerrigar · after Act II", m:"Conquer Túr Dúlra, then Underroot dungeon for a Root Cutting → Albard."},
+        {id:"scsq-08", type:"side", name:"The Starving Strand", loc:"Braestaig", m:"Strandflats, speak to Tadhg."},
+        {id:"scsq-09", type:"side", name:"Stolen Artifice", loc:"Braestaig", m:"Kill Darcel."},
+        {id:"scsq-10", type:"side", name:"Votive Passing", loc:"Braestaig · after Act II", m:"Search 3 resting sites, deliver the item."},
+        {id:"scsq-11", type:"side", name:"Ravenous Predator's Offering", drop:1, m:"Loot Ravenous Predator's Offering from corpses in Wailing Hills → harvest anima from Beasts."},
+        {id:"scsq-12", type:"side", name:"A Briny Fate", loc:"Marowen", m:"Speak to the Wounded Soldier, open a Sailor's Chest for the letter."},
+        {id:"scsq-13", type:"side", name:"Stemming the Tide", loc:"Marowen", m:"Kill 100 Drowned."},
+        {id:"scsq-14", type:"side", name:"Whispers from Below", loc:"The Gaunt Eyrr", m:"Find Cecil."},
+        {id:"scsq-15", type:"side", name:"A Sodden Pact", chain:"Auto-follows Whispers from Below", m:"Find 5 Sodden Growth → Roina on the beach."},
+        {id:"scsq-16", type:"side", name:"Untangling Truths", chain:"Auto-follows A Sodden Pact", m:"Place offerings at 3 Derelict Shrines."},
+        {id:"scsq-17", type:"side", name:"Threads of Envy", chain:"Auto-follows Untangling Truths", m:"Mithering Descent, defeat the Sodden Effigy → Marowen."},
+        {id:"scsq-18", type:"side", name:"Warded Sailor's Vessel", drop:1, m:"Loot Warded Sailor's Vessel from corpses in The Cursed Scarps → harvest anima from Drowned."},
+        {id:"scsq-19", type:"side", name:"A Deepening Shadow", loc:"Shob'ha's Perch", m:"Kill corrupted deer, examine 3 spots, kill Barret."},
+        {id:"scsq-20", type:"side", name:"The Old Ways", chain:"Auto-follows A Deepening Shadow", m:"Conquer Túr Dúlra, Lair of the Despoiler, kill 3 Wildwood, activate 3 Sacred Stones."},
+        {id:"scsq-21", type:"side", name:"A Sliver of Light", chain:"Auto-follows The Old Ways", m:"Lead Mochrann to 3 corrupted fonts."},
+        {id:"scsq-22", type:"side", name:"Tending Nature", loc:"Túr Dúlra · after stronghold", m:"Gather 3 items, kill the Poachers."},
+        {id:"scsq-23", type:"side", name:"The Diviner", loc:"Túr Dúlra · after stronghold", m:"Find a Runestone, activate 3 Runestones."},
+        {id:"scsq-24", type:"side", name:"Left in Ashes", loc:"Túr Dúlra · after The Diviner", m:"Kill Cursed Eadaoin's Spirit."},
+        {id:"scsq-25", type:"side", name:"The Traveling Scholar", loc:"Southern Briars · after Túr Dúlra", m:"Escort Aria, search for druid items."},
+        {id:"scsq-26", type:"side", name:"Fields of Ruin", loc:"Blycroft", m:"Place items at the marked areas."},
+        {id:"scsq-27", type:"side", name:"Feral Moon", loc:"The Harrowfields · after What Ails Thee", m:"Sarat's Lair dungeon, find the Light-Blessed Amulet."},
+        {id:"scsq-28", type:"side", name:"Ever Faithful", loc:"Wraithstead", m:"Abandoned Smuggler's Den, kill Faolan."},
+        {id:"scsq-29", type:"side", name:"First Among Wolves", loc:"Wraithstead · after Fields of Ruin", m:"Find Una's Journals, kill all werewolves."},
+        {id:"scsq-30", type:"side", name:"The Snare", chain:"Auto-follows First Among Wolves", m:"Find a druidic totem, complete the blood ritual."},
+        {id:"scsq-31", type:"side", name:"With Fangs Bared", chain:"Auto-follows The Snare", m:"Abandoned Barrow, kill Una."},
+        {id:"scsq-32", type:"side", name:"The Seer", loc:"The Cinder Woods", m:"Kill Khazra for 5 Goatman Entrails → Baewyn."},
+        {id:"scsq-33", type:"side", name:"Smoke Signals", chain:"Auto-follows The Seer", m:"Kealer Farm → return to Baewyn."},
+        {id:"scsq-34", type:"side", name:"Reclamation", chain:"Auto-follows Smoke Signals", m:"Domhainne Tunnels, find the Cathedral Cross 3×."},
+        {id:"scsq-35", type:"side", name:"Message in a Bottle", drop:1, m:"Loot the Washed-Ashore Bottle on the shore at Razor Shoals → find Padrig in Corbach."},
+        {id:"scsq-36", type:"side", name:"An Acquired Taste", loc:"Tirmair", npc:"Atli", m:"Kill Thorn Beasts for 12 Thorn Beast Meat."},
+        {id:"scsq-37", type:"side", name:"Of Pests and Pestilence", bug:1, bugmsg:"The Stinging Swarms sometimes fail to spawn in the target area, stalling the kill count (reported as recently as late 2025). Fix: leave the zone and return, or relog, to force a respawn.", loc:"Tirmair", npc:"Meav", m:"Kill 75 Stinging Swarms in the Shrouded Moors."},
+        {id:"scsq-38", type:"side", name:"Settling the Tab", loc:"Tirmair", m:"Fat Goose Inn, speak to the Innkeeper."},
+        {id:"scsq-39", type:"side", name:"The Wrong Hands", drop:1, m:"Loot Broken Carving in Shrouded Moors / Highland Wilds (after With Fangs Bared) → Artair in Wraithstead."},
+        {id:"scsq-40", type:"side", name:"A Different Beast", drop:1, m:"Loot Broken Totem in Shrouded Moors / Highland Wilds (after The Wrong Hands) → Artair."},
+        {id:"scsq-41", type:"side", name:"The Broken Bear", drop:1, m:"Loot Broken Bear Totem from Grizzly Bears (after A Different Beast) → Artair."},
+        {id:"scsq-42", type:"side", name:"Remembering the Goose", loc:"Under the Fat Goose Inn", m:"The marked area."},
+        {id:"scsq-43", type:"side", name:"Wagered Honor", loc:"Under the Fat Goose Inn", m:"Kill Gormothos."},
+        {id:"scsq-44", type:"side", name:"Claws at the Throat", loc:"Great Northern Plains · after Remembering the Goose", m:"The Inn, then the Slain Merchant."},
+        {id:"scsq-45", type:"side", name:"Pyre of Ash", chain:"Auto-follows Claws at the Throat", m:"Embered Recess, kill the enemies."},
+        {id:"scsq-46", type:"side", name:"Chasing Embers", chain:"Auto-follows Pyre of Ash", m:"The Scar, find the pyre victim on a cliff."},
+        {id:"scsq-47", type:"side", name:"The Bear of Blackweald", chain:"Auto-follows Chasing Embers", m:"Seared Hollow, kill Stana."},
+      ]},
+      {h:"Dungeons · 25 total · 40 Renown each", items:[
+        {id:"scdg-01", type:"dungeon", name:"Broken Bulwark"},
+        {id:"scdg-02", type:"dungeon", name:"Demon's Wake"},
+        {id:"scdg-03", type:"dungeon", name:"Underroot", m:"Túr Dúlra-gated · the Daughter of the Oak dungeon."},
+        {id:"scdg-04", type:"dungeon", name:"Wretched Delve", m:"Túr Dúlra-gated · Aspect of Static Cling."},
+        {id:"scdg-05", type:"dungeon", name:"Howling Warren", m:"Uaill Basin (W of Braestaig) · Aspect of Arrow Storms."},
+        {id:"scdg-06", type:"dungeon", name:"Calibel's Mine", m:"The Old Mine Works · Aspect of the Relentless Armsmaster."},
+        {id:"scdg-07", type:"dungeon", name:"Sunken Ruins", m:"Stormbreak Cove · Aspect of Ancestral Force."},
+        {id:"scdg-08", type:"dungeon", name:"Flooded Depths", m:"Hope's Light-gated."},
+        {id:"scdg-09", type:"dungeon", name:"Vault of The Forsaken"},
+        {id:"scdg-10", type:"dungeon", name:"Penitent Cairns"},
+        {id:"scdg-11", type:"dungeon", name:"Raethwind Wilds"},
+        {id:"scdg-12", type:"dungeon", name:"Stockades"},
+        {id:"scdg-13", type:"dungeon", name:"Sarat's Lair", m:"The Feral Moon dungeon."},
+        {id:"scdg-14", type:"dungeon", name:"Oldstones"},
+        {id:"scdg-15", type:"dungeon", name:"Domhainne Tunnels", m:"The Reclamation dungeon."},
+        {id:"scdg-16", type:"dungeon", name:"Luban's Rest"},
+        {id:"scdg-17", type:"dungeon", name:"Garan Hold"},
+        {id:"scdg-18", type:"dungeon", name:"Mariner's Refuge"},
+        {id:"scdg-19", type:"dungeon", name:"Twisted Hollow", m:"Moordaine Lodge-gated."},
+        {id:"scdg-20", type:"dungeon", name:"Ferals' Den", m:"Moordaine Lodge-gated."},
+        {id:"scdg-21", type:"dungeon", name:"Jalal's Vigil"},
+        {id:"scdg-22", type:"dungeon", name:"Aldurwood"},
+        {id:"scdg-23", type:"dungeon", name:"Maddux Watch"},
+        {id:"scdg-24", type:"dungeon", name:"Hive"},
+        {id:"scdg-25", type:"dungeon", name:"Whispering Pines"},
+      ]},
+    ]
+  },
+  {
+    id:"drysteppes", title:"Dry Steppes", sub:"Harsh wastes · Act III · in-game Renown: 8 WP · 3 SH · 38 SQ · 21 DG", lvl:"Lvl ~25–35",
+    groups:[
+      {h:"Waypoints · 8 total", items:[
+        {id:"dswp-1", type:"waypoint", name:"Ked Bardu", m:"Capital · central Kotama Grasslands."},
+        {id:"dswp-2", type:"waypoint", name:"Alzuuda", m:"PvP town (Fields of Hatred)."},
+        {id:"dswp-3", type:"waypoint", name:"Farobru", m:"Western Dry Steppes."},
+        {id:"dswp-4", type:"waypoint", name:"Jirandai", m:"Untamed Scarps (SE)."},
+        {id:"dswp-5", type:"waypoint", name:"Fate's Retreat", m:"Eastern Dry Steppes."},
+        {id:"dswp-6", type:"waypoint", name:"Hidden Overlook", m:"Jakha Basin."},
+        {id:"dswp-7", type:"waypoint", name:"The Onyx Watchtower", m:"Inside the Stronghold (center) — unlocks when you clear it."},
+        {id:"dswp-8", type:"waypoint", name:"Ruins of Qara-Yisu", m:"Inside the Stronghold (SE) — unlocks when you clear it."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"dssh-1", type:"stronghold", name:"The Onyx Watchtower", m:"Center, SE of Ked Bardu · unlocks its waypoint + the Onyx Hold dungeon."},
+        {id:"dssh-2", type:"stronghold", name:"Temple of Rot", m:"Southwest · north of Jirandai."},
+        {id:"dssh-3", type:"stronghold", name:"Ruins of Qara-Yisu", m:"Southeast · unlocks its waypoint + Shifting City & Pallid Delve dungeons."},
+      ]},
+      {h:"Side Quests · 39 total (all named) · in powerpyx map order", items:[
+        {id:"dssq-01", type:"side", name:"Dust Daisy", drop:1, m:"Loot Dust Daisy from herbs in Kotama Grasslands → Jaral in Ked Bardu."},
+        {id:"dssq-02", type:"side", name:"Corroding Mettle", loc:"Ked Bardu", m:"Jirandai (Ordun), search for Khada."},
+        {id:"dssq-03", type:"side", name:"Thieves' Famine", loc:"Ked Bardu", m:"Kill Bandits for 20 Stolen Supplies."},
+        {id:"dssq-04", type:"side", name:"Crucible of Worth", loc:"Ked Bardu", m:"Grab the cliff axe, kill Oppressors for a horn, mine silver quartz."},
+        {id:"dssq-05", type:"side", name:"Malign Devotion", loc:"Ked Bardu", npc:"Hunsun", m:"Alzuuda (Lakren), Lost Monument Crypt."},
+        {id:"dssq-06", type:"side", name:"Hunger for a New Life", loc:"Farobru · after Act III", m:"Zolaya's Hideout, gather herbs."},
+        {id:"dssq-07", type:"side", name:"Reject the Mother", loc:"Abahru Canyon · after Act III", m:"Use the No gesture."},
+        {id:"dssq-08", type:"side", name:"Strange Ore Sample", drop:1, m:"Loot Strange Ore Sample from Ore Veins in Tusmaa Rift → Gerti."},
+        {id:"dssq-09", type:"side", name:"No Deed Unpunished", loc:"Tusmaa Rift · after Act III", m:"Kill the Caged Cultist."},
+        {id:"dssq-10", type:"side", name:"Exhuming Faith", loc:"Orbei Monastery", m:"Follow trail markers, kill Izzoth the Deceiver."},
+        {id:"dssq-11", type:"side", name:"Firsthand Knowledge", loc:"The Forlorn Tread", m:"Family Cellar, defeat Nurbolat."},
+        {id:"dssq-12", type:"side", name:"Sealed Penitent's Cache", drop:1, m:"Loot the Sealed Penitent's Cache from a Shambling Corpse in The Scarred Coast → kill Undead to harvest spirit energy."},
+        {id:"dssq-13", type:"side", name:"The Unlucky Ones", loc:"Tamuur Hinterland", m:"Kill 50 zombies in The Scarred Coast."},
+        {id:"dssq-14", type:"side", name:"Scorched Debts", loc:"Bastard's Pass", m:"Take the ledger, kill Andreea."},
+        {id:"dssq-15", type:"side", name:"Sealed Oxen Tribe Cache", drop:1, m:"Loot Sealed Oxen Tribe Cache from enemies in The Crown of Fiends / Khargai Crags."},
+        {id:"dssq-16", type:"side", name:"Kith and Kin", loc:"The Onyx Watchtower · after stronghold", m:"Kill Skeletons for 15 Personal Effects → Chabi."},
+        {id:"dssq-17", type:"side", name:"A Pound of Flesh", loc:"The Onyx Watchtower · after stronghold", m:"Borza's Hideout, kill Borza & Nizaar."},
+        {id:"dssq-18", type:"side", name:"Sentimental Value", loc:"Hidden Overlook (after Act III)", m:"Desolation's Reach, kill Orsolya."},
+        {id:"dssq-19", type:"side", name:"What Remains", loc:"Hidden Overlook (after Act III)", m:"Farobru (Yeshi), kill Hungry Bloodhawk."},
+        {id:"dssq-20", type:"side", name:"Weight of Sin", loc:"The Boiling Plains", m:"Search charred remains for the bracelets."},
+        {id:"dssq-21", type:"side", name:"Curious Curios", loc:"The Boiling Plains", m:"Search pots, speak to Rakhaan."},
+        {id:"dssq-22", type:"side", name:"Hunting the Relic Hunter", loc:"Fate's Retreat · after Curious Curios", m:"Foothills of Saraan (Abaan), slay skeletons."},
+        {id:"dssq-23", type:"side", name:"Treasure or Trash", loc:"Fate's Retreat · after More Than Meets the Eye", m:"Grab the ring, kill demons for essences."},
+        {id:"dssq-24", type:"side", name:"In the Name of Love", loc:"Fate's Retreat · after Act III", m:"Whispering Vault dungeon, find the Cleaver."},
+        {id:"dssq-25", type:"side", name:"More Than Meets the Eye", loc:"Foothills of Saraan · after Hunting the Relic Hunter", m:"Saraan Caldera, redirect light beams, kill Overseer Kafan."},
+        {id:"dssq-26", type:"side", name:"Keeping the Old Traditions", loc:"Desolation's Reach", m:"Use the Yes gesture."},
+        {id:"dssq-27", type:"side", name:"Augury of Bones", loc:"Desolation's Reach", m:"Kill Skeletons for 3 Bone Dust."},
+        {id:"dssq-28", type:"side", name:"Hubris Smiles Back", chain:"Auto-follows Augury of Bones", m:"Ogai → Grinning One dungeon, collect 5 Baneful Oblations."},
+        {id:"dssq-29", type:"side", name:"Salt Begets Salt", loc:"Jirandai", m:"Search for Tuji's body."},
+        {id:"dssq-30", type:"side", name:"Blistered Heart", loc:"Jirandai", npc:"Sorga", m:"Kill Spiders until the Spider Queen spawns, take her Heart."},
+        {id:"dssq-31", type:"side", name:"Tarnished Amulet", drop:1, m:"Loot Tarnished Amulet from Cannibals in Untamed Scarps → Yinsuk Shrine."},
+        {id:"dssq-32", type:"side", name:"Culling of Flesh", loc:"Crane Tribe Hutmoot", m:"Kill 50 Cannibals."},
+        {id:"dssq-33", type:"side", name:"Consumed by Pride", loc:"Crane Tribe Hutmoot", npc:"Ealda", m:"Find a Mutilated Barbarian corpse."},
+        {id:"dssq-34", type:"side", name:"Raising Spears", chain:"Auto-follows Consumed by Pride", m:"Champion's Demise dungeon, collect 8 Blood-etched Spears."},
+        {id:"dssq-35", type:"side", name:"Fury Against Fate", bug:1, bugmsg:"Bugs out when a World Event is active near Wasting Hollow's cave (an attackable barricade = bugged). Fix: leave, clear any nearby World Events, then re-enter the cave so Ealda will follow.", chain:"Auto-follows Raising Spears", m:"Escort Ealda into Wasting Hollow and kill all the cannibals."},
+        {id:"dssq-36", type:"side", name:"Worthy of Arreat", loc:"Crane Tribe Hutmoot · after Fury Against Fate"},
+        {id:"dssq-37", type:"side", name:"Currencies From Afar", drop:1, m:"Loot Bag of Old Coins from corpses in Untamed Scarps → Gesur in Jirandai."},
+        {id:"dssq-38", type:"side", name:"Phases of the Moon", loc:"Ruins of Qara-Yisu · after stronghold", m:"Kill Khazra for 25 Khazra Bones → Arban."},
+        {id:"dssq-39", type:"side", name:"Blood and Sweat", bug:1, loc:"Ruins of Qara-Yisu · after stronghold", m:"Find a Crude Doll → Tuya in Alzuuda."},
+      ]},
+      {h:"Dungeons · 21 total · 40 Renown each", items:[
+        {id:"dsdg-01", type:"dungeon", name:"Seaside Descent"},
+        {id:"dsdg-02", type:"dungeon", name:"Dark Ravine"},
+        {id:"dsdg-03", type:"dungeon", name:"Path of the Blind"},
+        {id:"dsdg-04", type:"dungeon", name:"Mournfield"},
+        {id:"dsdg-05", type:"dungeon", name:"Grinning Labyrinth", m:"The Hubris Smiles Back dungeon (Grinning One)."},
+        {id:"dsdg-06", type:"dungeon", name:"Onyx Hold", m:"Onyx Watchtower-gated."},
+        {id:"dsdg-07", type:"dungeon", name:"Forgotten Depths"},
+        {id:"dsdg-08", type:"dungeon", name:"Carrion Fields"},
+        {id:"dsdg-09", type:"dungeon", name:"Komdor Temple"},
+        {id:"dsdg-10", type:"dungeon", name:"Charnel House"},
+        {id:"dsdg-11", type:"dungeon", name:"Sealed Archives"},
+        {id:"dsdg-12", type:"dungeon", name:"Champion's Demise", m:"The Raising Spears dungeon."},
+        {id:"dsdg-13", type:"dungeon", name:"Bloodsoaked Crag"},
+        {id:"dsdg-14", type:"dungeon", name:"Ancient's Lament"},
+        {id:"dsdg-15", type:"dungeon", name:"Buried Halls"},
+        {id:"dsdg-16", type:"dungeon", name:"Guulrahn Canals"},
+        {id:"dsdg-17", type:"dungeon", name:"Guulrahn Slums"},
+        {id:"dsdg-18", type:"dungeon", name:"Shifting City", m:"Ruins of Qara-Yisu-gated."},
+        {id:"dsdg-19", type:"dungeon", name:"Pallid Delve", m:"Ruins of Qara-Yisu-gated."},
+        {id:"dsdg-20", type:"dungeon", name:"Betrayer's Row"},
+        {id:"dsdg-21", type:"dungeon", name:"Whispering Vault", m:"The In the Name of Love dungeon."},
+      ]},
+    ]
+  },
+  {
+    id:"kehjistan", title:"Kehjistan", sub:"Desert · Act IV/V · capital Gea Kul / Caldeum · in-game Renown: 6 WP · 3 SH · 44 SQ · 23 DG", lvl:"Lvl ~35–45",
+    groups:[
+      {h:"Waypoints · 6 total", items:[
+        {id:"kewp-1", type:"waypoint", name:"Gea Kul", m:"Capital · southwest of the Southern Expanse."},
+        {id:"kewp-2", type:"waypoint", name:"Tarsarak", m:"Center · Scouring Sands."},
+        {id:"kewp-3", type:"waypoint", name:"Denshar", m:"West · Fields of Hatred."},
+        {id:"kewp-4", type:"waypoint", name:"Imperial Library", m:"North of Caldeum."},
+        {id:"kewp-5", type:"waypoint", name:"Iron Wolves Encampment", m:"Northeast of the Ragged Coastline."},
+        {id:"kewp-6", type:"waypoint", name:"Altar of Ruin", m:"Inside the Stronghold (north) — unlocks when you clear it."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"kesh-1", type:"stronghold", name:"Altar of Ruin", m:"North, NE of Iron Wolves Encampment · unlocks its waypoint · boss: Dark Cardinal Maldul."},
+        {id:"kesh-2", type:"stronghold", name:"Alcarnus", m:"Center, NW of Tarsarak (E of Imperial Library) · Necromancer boss."},
+        {id:"kesh-3", type:"stronghold", name:"Omath's Redoubt", m:"Southeast, E of Gea Kul · unlocks the Crumbling Hekma dungeon · boss: High Priestess Hadar."},
+      ]},
+      {h:"Side Quests · 44 total (all named) · in powerpyx map order", items:[
+        {id:"kesq-01", type:"side", name:"Traces of Iron", loc:"Tarsarak", m:"Iron Wolves Encampment, return Asyfa's amulet."},
+        {id:"kesq-02", type:"side", name:"Payment Past Due", loc:"Tarsarak", m:"Find the Miner's Lockbox in Rezam's Excavation."},
+        {id:"kesq-03", type:"side", name:"Shadow of Alcarnus", loc:"Forlorn Badlands", m:"Kill 12 Fly Demons."},
+        {id:"kesq-04", type:"side", name:"Strayed from the Path", loc:"Tarsarak · post-campaign"},
+        {id:"kesq-05", type:"side", name:"Ravenous Necrolyte's Cache", drop:1, m:"Loot the Ravenous Necrolyte's Cache from enemies in The Outer Gardens / Scouring Sands (post-campaign) → feed death anima."},
+        {id:"kesq-06", type:"side", name:"Mirage", loc:"Dunes of Despair", m:"Follow the mirage, destroy buried effigies, kill Jazadar."},
+        {id:"kesq-07", type:"side", name:"Desiccation", loc:"Searing Expanse", m:"Heal Naglaa, destroy 4 Fly Nests → Zakarum Temple."},
+        {id:"kesq-08", type:"side", name:"The Pilgrim's Footsteps", loc:"Searing Expanse", m:"Zakarum Chapel, use the Follow gesture."},
+        {id:"kesq-09", type:"side", name:"Butchers of the North", loc:"Zakarum Chapel", m:"Kill 35 Cannibals."},
+        {id:"kesq-10", type:"side", name:"Symbol of Faith", loc:"Zakarum Chapel", m:"Tomb of the Saints dungeon, kill the Graverobber."},
+        {id:"kesq-11", type:"side", name:"Unsafe Travels", loc:"Tar Pits", m:"Find a Ghost Palm."},
+        {id:"kesq-12", type:"side", name:"Road to Ruin", loc:"Dunes of Despair · after Unsafe Travels", m:"Follow Mahjoob, kill Fly Demons."},
+        {id:"kesq-13", type:"side", name:"The Only Cure", chain:"Auto-follows Road to Ruin", m:"Mahjoob's Safehouse, kill him."},
+        {id:"kesq-14", type:"side", name:"Strange Remedies", loc:"Iron Wolves Encampment", m:"Kill Drowned for 12 Digested Gutweed."},
+        {id:"kesq-15", type:"side", name:"A Wolf's Honor", loc:"Iron Wolves Encampment", m:"Forgotten Ruins dungeon, retrieve Alim & Tala's belongings."},
+        {id:"kesq-16", type:"side", name:"Guardians of the Pit", loc:"Iron Wolves Encampment", m:"Kill Skeletons until the champion spawns."},
+        {id:"kesq-17", type:"side", name:"On the Hunt", loc:"Iron Wolves Encampment", m:"Find Dawood, kill Malik → Haddad."},
+        {id:"kesq-18", type:"side", name:"Seeking Refuge", loc:"Scorched Gulch", m:"Collect the supplies → Haddad."},
+        {id:"kesq-19", type:"side", name:"More Value Than Gold", loc:"Iron Wolves Encampment · after the prior IW quests · leave & return", m:"Tunnels Beneath The Oasis, kill 7 caged plague demons + the Dahlgur Putrifier."},
+        {id:"kesq-20", type:"side", name:"Head of the Snake", chain:"Auto-follows More Value Than Gold", m:"Triune Hideout, kill all Triune Cultists."},
+        {id:"kesq-21", type:"side", name:"A Moment of Peace", chain:"Auto-follows Head of the Snake", m:"Speak to Asa & Dawood (concludes A Wolf's Honor)."},
+        {id:"kesq-22", type:"side", name:"Timely Correspondence", drop:1, m:"Loot the Waterstained Letter from objects in the Ragged Coastline."},
+        {id:"kesq-23", type:"side", name:"Unusual Ore", drop:1, m:"Loot Unusual Ore from ore veins in the Ragged Coastline → Benamin at Iron Wolves Encampment."},
+        {id:"kesq-24", type:"side", name:"Endless Fortune", drop:1, m:"Loot the Old Journal from a Treasure Goblin → Ostaf in Gea Kul."},
+        {id:"kesq-25", type:"side", name:"Final Straw", loc:"Pale Sands", m:"Take the oats, find & escort Neema the camel."},
+        {id:"kesq-26", type:"side", name:"Deadly Trade", loc:"Gea Kul", npc:"Shahos", m:"Kill Khazra for 20 Khazra Glands."},
+        {id:"kesq-27", type:"side", name:"Pinch of Poison", loc:"Gea Kul", m:"Kill Scorpions for 15 Venom Glands → Baraim."},
+        {id:"kesq-28", type:"side", name:"The Speaking Stone", loc:"Gea Kul", m:"Find the statue."},
+        {id:"kesq-29", type:"side", name:"A Voice from the Past", loc:"Central Plateau · after The Speaking Stone", m:"Conclave dungeon, find the Vizjerei Vessel."},
+        {id:"kesq-30", type:"side", name:"Izel of the Vizjerei", chain:"Auto-follows A Voice from the Past", m:"Vizjerei Athenaeum, kill Izel."},
+        {id:"kesq-31", type:"side", name:"Late Shipment", drop:1, m:"Loot the Battered Shipment from enemies in the Southern Expanse → Aih'Setal."},
+        {id:"kesq-32", type:"side", name:"Zakarum's Plight", loc:"Hakan's Oasis", m:"Gather water → Tameon."},
+        {id:"kesq-33", type:"side", name:"When the Tide Comes In", loc:"Shipwreck Cove", m:"Find a sword + all 3 family members."},
+        {id:"kesq-34", type:"side", name:"Spotted Mushroom", drop:1, m:"Loot Spotted Mushroom from herbs → Veroka in Kyovashad (Fractured Peaks)."},
+        {id:"kesq-35", type:"side", name:"Sealed Khazra Offering", drop:1, m:"Loot the Sealed Khazra Offering from Khazra in Eastern Basin → harvest death anima."},
+        {id:"kesq-36", type:"side", name:"In Desperate Times", loc:"Imperial Library · post-campaign", m:"Read the book, use the Help gesture at the statue."},
+        {id:"kesq-37", type:"side", name:"To Serve Again", drop:1, m:"Loot Iron Wolf Armor from the Abandoned Iron Wolves Garrison (post-campaign) → Barez in Imperial Library."},
+        {id:"kesq-38", type:"side", name:"The Weapon of a Wolf", drop:1, m:"Loot the Iron Wolf Sword from enemies in the Residential District (post-campaign)."},
+        {id:"kesq-39", type:"side", name:"An Errant Flock", loc:"Southern Expanse · post-campaign", m:"Follow the Traveler, fighting at each stop."},
+        {id:"kesq-40", type:"side", name:"Acts of Atonement", chain:"Auto-follows An Errant Flock", m:"Speak to 5 people in Gea Kul, Commandeered House, kill the Knights Penitent."},
+        {id:"kesq-41", type:"side", name:"Justice Delayed", chain:"Auto-follows Acts of Atonement", m:"Kill the Knights Penitent → Edgar."},
+        {id:"kesq-42", type:"side", name:"An Unlawful Order", chain:"Auto-follows Justice Delayed", m:"Osric's Garrison, kill Osric."},
+        {id:"kesq-43", type:"side", name:"Remnants", drop:1, m:"Loot the Crumpled Note from Tortured Prisoners in the Prison of Caldeum dungeon (post-campaign) → Caldeum Hideout, kill the Knights Penitent."},
+        {id:"kesq-44", type:"side", name:"The Way of the Three", bug:1, bugmsg:"Statue spots: Baal at the Altar of Ruin Ritual Site (conquer the stronghold first), Mephisto at Caldeum's south edge near the Fields of Hatred path, and the Hatred statue — a half-buried head — at Denshar's NW exit. The Denshar head occasionally fails to spawn; relog if the Cheer emote won't light it.", loc:"Caldeum · hidden quest", m:"Use the Cheer emote at the three Prime Evil statues, then enter the gate that appears and win the fight."},
+      ]},
+      {h:"Dungeons · 23 total · 40 Renown each", items:[
+        {id:"kedg-01", type:"dungeon", name:"Fading Echo"},
+        {id:"kedg-02", type:"dungeon", name:"Halls of the Damned"},
+        {id:"kedg-03", type:"dungeon", name:"Abandoned Mineworks"},
+        {id:"kedg-04", type:"dungeon", name:"Sirocco Caverns"},
+        {id:"kedg-05", type:"dungeon", name:"Inferno"},
+        {id:"kedg-06", type:"dungeon", name:"Collapsed Vault"},
+        {id:"kedg-07", type:"dungeon", name:"Shivta Ruins"},
+        {id:"kedg-08", type:"dungeon", name:"Sunken Library"},
+        {id:"kedg-09", type:"dungeon", name:"Tomb of the Saints", m:"The Symbol of Faith dungeon."},
+        {id:"kedg-10", type:"dungeon", name:"Sepulcher of the Forsworn"},
+        {id:"kedg-11", type:"dungeon", name:"Yshari Sanctum"},
+        {id:"kedg-12", type:"dungeon", name:"Crusaders' Cathedral"},
+        {id:"kedg-13", type:"dungeon", name:"Renegade's Retreat"},
+        {id:"kedg-14", type:"dungeon", name:"Prison of Caldeum", m:"The Remnants quest (post-campaign)."},
+        {id:"kedg-15", type:"dungeon", name:"Deserted Underpass"},
+        {id:"kedg-16", type:"dungeon", name:"Crumbling Hekma", m:"Omath's Redoubt-gated."},
+        {id:"kedg-17", type:"dungeon", name:"Hakan's Refuge"},
+        {id:"kedg-18", type:"dungeon", name:"Conclave", m:"The A Voice from the Past dungeon."},
+        {id:"kedg-19", type:"dungeon", name:"Putrid Aquifer"},
+        {id:"kedg-20", type:"dungeon", name:"Corrupted Grotto"},
+        {id:"kedg-21", type:"dungeon", name:"Uldur's Cave"},
+        {id:"kedg-22", type:"dungeon", name:"Forgotten Ruins", m:"The A Wolf's Honor dungeon."},
+        {id:"kedg-23", type:"dungeon", name:"Heretics Asylum"},
+      ]},
+    ]
+  },
+  {
+    id:"hawezar", title:"Hawezar", sub:"Swamp · Act V · in-game Renown: 6 WP · 3 SH · 50 SQ · 23 DG", lvl:"Lvl ~45–50",
+    groups:[
+      {h:"Waypoints · 6 total", items:[
+        {id:"hwwp-1", type:"waypoint", name:"Zarbinzet", m:"Capital · central Umir Plateau."},
+        {id:"hwwp-2", type:"waypoint", name:"Wejinhani", m:"Dismal Foothills (top-middle) · grab it early in Act V."},
+        {id:"hwwp-3", type:"waypoint", name:"Ruins of Rakhat Keep: Inner Court", m:"Center of Hawezar."},
+        {id:"hwwp-4", type:"waypoint", name:"Backwater", m:"East side of the Forsaken Coast."},
+        {id:"hwwp-5", type:"waypoint", name:"The Tree of Whispers", m:"NE of The Writhing Mire — unlocks after you activate the Tree of Whispers."},
+        {id:"hwwp-6", type:"waypoint", name:"Vyeresz", m:"Inside the Stronghold (south) — unlocks when you clear it."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"hwsh-1", type:"stronghold", name:"Crusaders' Monument", m:"North of Zarbinzet · Graverobbers."},
+        {id:"hwsh-2", type:"stronghold", name:"Eriman's Pyre", m:"Far north, W of the Tree of Whispers · unlocks the Oblivion dungeon (no waypoint)."},
+        {id:"hwsh-3", type:"stronghold", name:"Vyeresz", m:"South, north of Toxic Fens · unlocks its waypoint + the Shadowed Plunge dungeon."},
+      ]},
+      {h:"Side Quests · 50 total (all named) · powerpyx order + the Season-2 addition", items:[
+        {id:"hwsq-01", type:"side", name:"Remnants of Faith", loc:"Zarbinzet", m:"Maugan's Works dungeon, find the armour."},
+        {id:"hwsq-02", type:"side", name:"The Heretic", loc:"Zarbinzet", m:"Kill demons, gather flowers, clear the Forgotten Cave."},
+        {id:"hwsq-03", type:"side", name:"A Price to Pay", chain:"Auto-follows The Heretic", m:"Blind Burrows, collect 8 Spider Venom → Aneta/Gulyas."},
+        {id:"hwsq-04", type:"side", name:"Poisoned Hearts", chain:"Auto-follows A Price to Pay", m:"Gulyas' Hovel braziers, 4 Rotten Livers, fill the Blood Altar."},
+        {id:"hwsq-05", type:"side", name:"Coiled Grasp", loc:"Zarbinzet · after Act V", m:"Inspect the corpse."},
+        {id:"hwsq-06", type:"side", name:"To Walk a Dark Path", loc:"Zarbinzet · after Act V", m:"Decaying Farmstead, Forgotten Lockbox, question the Pilgrims."},
+        {id:"hwsq-07", type:"side", name:"At Any Cost", chain:"Auto-follows To Walk a Dark Path"},
+        {id:"hwsq-08", type:"side", name:"Turbulent Waters", chain:"Auto-follows At Any Cost", m:"Backwater, buy Cerrigar Mead, find Sev."},
+        {id:"hwsq-09", type:"side", name:"By Three They Come", chain:"Auto-follows Turbulent Waters", m:"Halls of Dark Portent, kill the Blood Echo → Father Dymus."},
+        {id:"hwsq-10", type:"side", name:"Overstepping the Mark", loc:"Zarbinzet · after Drink to the Past & Good Riddance", m:"Buy the Thieves Guild Emblem → Lyndon."},
+        {id:"hwsq-11", type:"side", name:"Flesh and Blood", loc:"Backwater area"},
+        {id:"hwsq-12", type:"side", name:"The Swamp's Protection", loc:"Timue's Hovel · after Act V", m:"Find Duraya, Baridan & Raldin, kill bandits."},
+        {id:"hwsq-13", type:"side", name:"Venom of the Nangari", drop:1, m:"Loot Curious Venom from Nangari in Blightmarsh → Timue."},
+        {id:"hwsq-14", type:"side", name:"One Little Red Sprig", drop:1, m:"Loot Budding Crimson Thorn from herbs (after meeting Timue) → Timue."},
+        {id:"hwsq-15", type:"side", name:"Hungering Necrolyte's Cache", drop:1, m:"Loot the Hungering Necrolyte's Cache from corpses in Toxic Fens → harvest death anima."},
+        {id:"hwsq-16", type:"side", name:"Necrotic Research", loc:"Gulyas' Hovel · after Poisoned Hearts", m:"1 Necrotic Flesh + 5 Snake Venom."},
+        {id:"hwsq-17", type:"side", name:"Bad Blood", loc:"Gulyas' Hovel · after Necrotic Research", m:"Dose the bandit & cultist camp pots."},
+        {id:"hwsq-18", type:"side", name:"Timeworn Effigy", drop:1, m:"Loot the Timeworn Timue Doll from containers (after meeting Timue) → Timue."},
+        {id:"hwsq-19", type:"side", name:"A Debt Repaid", loc:"Backwater", m:"Find & kill Flinn."},
+        {id:"hwsq-20", type:"side", name:"Dead in the Water", loc:"Backwater", m:"Kill Drowned for 10 Salvaged Resources, burn 3 Corpses (Tomaj)."},
+        {id:"hwsq-21", type:"side", name:"Brought to Heel", loc:"Backwater", m:"Search for the red mushroom."},
+        {id:"hwsq-22", type:"side", name:"The Greater Good", loc:"Backwater"},
+        {id:"hwsq-23", type:"side", name:"Discretionary Spending", loc:"Backwater · after Act V & The Greater Good", m:"Collect supplies, kill Backwater Traitors."},
+        {id:"hwsq-24", type:"side", name:"Bait the Trap", loc:"Backwater · after Discretionary Spending", m:"3 ambush sites, kill Traitors."},
+        {id:"hwsq-25", type:"side", name:"Dead to Rights", chain:"Auto-follows Bait the Trap", m:"Backwater Storage Cellar, kill the traitor."},
+        {id:"hwsq-26", type:"side", name:"Tangled Memories", loc:"Immurement of Thorns · after the Tree of Whispers in Act V", m:"Puffball reed → Backwater."},
+        {id:"hwsq-27", type:"side", name:"Growing Reminders", loc:"Immurement of Thorns · after Tangled Memories", m:"Kres, Timue, 10 Marsh Snake Venom."},
+        {id:"hwsq-28", type:"side", name:"Unearthed Regrets", loc:"Immurement of Thorns · after Growing Reminders", m:"Exsanguinated Remains, burn near Backwater."},
+        {id:"hwsq-29", type:"side", name:"Heart's Burden", drop:1, m:"Loot the Rusted Dagger (random)."},
+        {id:"hwsq-30", type:"side", name:"Traveler's Superstition", loc:"Bosun's Woe · after Act V", m:"Use the Hello gesture at the statue."},
+        {id:"hwsq-31", type:"side", name:"Ire of the Witch", loc:"Zurke's Hut · after Act V", m:"Sodden Graveyard, find Samil → Zurke."},
+        {id:"hwsq-32", type:"side", name:"Perceived Threat", chain:"Auto-follows Ire of the Witch", m:"Kill the Experimental Corpse."},
+        {id:"hwsq-33", type:"side", name:"Song of Rot", chain:"Auto-follows Perceived Threat", m:"Kill the Blood Fungus Host, defend Zurke."},
+        {id:"hwsq-34", type:"side", name:"Drink to the Past", drop:1, m:"Grab Kingsport Ale from the chest outside Belfry Zakara (after Dead to Rights) Lyndon."},
+        {id:"hwsq-35", type:"side", name:"Good Riddance", drop:1, m:"Loot the Forgotten Crossbow from corpses on the Rotspill Delta coast (after Dead to Rights) → Lyndon."},
+        {id:"hwsq-36", type:"side", name:"Gift of the Swamp", loc:"Path of Desperation", m:"Kill the swarm."},
+        {id:"hwsq-37", type:"side", name:"Fungal Remedies", chain:"Auto-follows Gift of the Swamp", m:"Pilgrim's Cave, collect 10 Gano Fungus."},
+        {id:"hwsq-38", type:"side", name:"Heart of Mold", chain:"Auto-follows Fungal Remedies", m:"Kill Nuroth the Vile Fang → Zurke & Yolanda."},
+        {id:"hwsq-39", type:"side", name:"Desperate Remedies", loc:"Wejinhani", m:"The Elders, search pyres, Light's Refuge dungeon, kill Aldara for her amulet."},
+        {id:"hwsq-40", type:"side", name:"What Can't Be Cured", loc:"Dismal Foothills", m:"Follow the quest markers toward Wejinhani."},
+        {id:"hwsq-41", type:"side", name:"A Question of Self", loc:"Ruined Tower · after Act V", m:"Search the tower, Hungering Swamp, kill Shades of Grief."},
+        {id:"hwsq-42", type:"side", name:"Past Regrets", chain:"Auto-follows A Question of Self", m:"Taissa's amulet → Tree of Whispers, 4 Oracle Eyes, Eldritch Conclave."},
+        {id:"hwsq-43", type:"side", name:"A Series of Steps", chain:"Auto-follows Past Regrets", m:"Taissa's tower, kill the Whisper of Andariel."},
+        {id:"hwsq-44", type:"side", name:"Closing the Book", loc:"Wejinhani · after Eriman's Pyre stronghold", m:"Elder Akos, find 4 Ledger Pages."},
+        {id:"hwsq-45", type:"side", name:"Glittering Abundance", drop:1, m:"Loot the Gem-Laden Geode from Ore Veins in Dismal Foothills → Tungal → Mislan in Zarbinzet."},
+        {id:"hwsq-46", type:"side", name:"Chained Zakarum Repository", drop:1, m:"Loot the Chained Zakarum Repository from Fallen in Dismal Foothills → harvest lingering essence."},
+        {id:"hwsq-47", type:"side", name:"Lost Legacy", m:"The Ruins (after Act V) Defiled Halls, kill 3 corrupted Paladin spirits, perform the ritual, kill Carthas."},
+        {id:"hwsq-48", type:"side", name:"Left Behind", loc:"Vyeresz · after stronghold", m:"Shadowed Plunge dungeon, find Derin."},
+        {id:"hwsq-49", type:"side", name:"Lost Cause", loc:"Vyeresz · after stronghold", m:"Kill Cultists, collect 10 Zakarum Prayer Amulets."},
+        {id:"hwsq-50", type:"side", name:"Remembering the Fallen", bug:1, bugmsg:"Known counter bug: this quest sometimes completes but does NOT add to the Hawezar side-quest tracker, leaving players stuck at 49/50 (reported on Blizzard forums across multiple seasons). If your counter doesn't tick up, relog and check the tracker again before assuming you missed a different quest.", loc:"Zarbinzet · follow-up to Lost Legacy", npc:"Ksenia", m:"Engrave the fallen Paladins' names (reward: Paladin Lord's Bulwark)."},
+      ]},
+      {h:"Dungeons · 23 total · 40 Renown each", items:[
+        {id:"hwdg-01", type:"dungeon", name:"Earthen Wound"},
+        {id:"hwdg-02", type:"dungeon", name:"Lost Keep"},
+        {id:"hwdg-03", type:"dungeon", name:"Endless Gates"},
+        {id:"hwdg-04", type:"dungeon", name:"Bastion of Faith"},
+        {id:"hwdg-05", type:"dungeon", name:"Blind Burrows"},
+        {id:"hwdg-06", type:"dungeon", name:"Maugan's Works", m:"The Remnants of Faith dungeon."},
+        {id:"hwdg-07", type:"dungeon", name:"Ruins of Eridu"},
+        {id:"hwdg-08", type:"dungeon", name:"Leviathan's Maw"},
+        {id:"hwdg-09", type:"dungeon", name:"Ghoa Ruins"},
+        {id:"hwdg-10", type:"dungeon", name:"Shadowed Plunge", m:"Vyeresz-gated · the Left Behind quest."},
+        {id:"hwdg-11", type:"dungeon", name:"Witchwater"},
+        {id:"hwdg-12", type:"dungeon", name:"Serpent's Lair", m:"Story-locked — unlocks late in Act V."},
+        {id:"hwdg-13", type:"dungeon", name:"Faceless Shrine"},
+        {id:"hwdg-14", type:"dungeon", name:"Belfry Zakara"},
+        {id:"hwdg-15", type:"dungeon", name:"Haunted Refuge"},
+        {id:"hwdg-16", type:"dungeon", name:"Ancient Reservoir"},
+        {id:"hwdg-17", type:"dungeon", name:"Fetid Mausoleum", m:"Story-locked — unlocks late in Act V."},
+        {id:"hwdg-18", type:"dungeon", name:"Oblivion", m:"Eriman's Pyre-gated."},
+        {id:"hwdg-19", type:"dungeon", name:"Heathen's Keep"},
+        {id:"hwdg-20", type:"dungeon", name:"Light's Refuge", m:"The Desperate Remedies dungeon."},
+        {id:"hwdg-21", type:"dungeon", name:"Iron Hold", m:"Story-locked — unlocks late in Act V."},
+        {id:"hwdg-22", type:"dungeon", name:"Akkhan's Grasp", m:"Story-locked — unlocks late in Act V."},
+        {id:"hwdg-23", type:"dungeon", name:"Steadfast Barracks", m:"Story-locked — unlocks late in Act V."},
+      ]},
+    ]
+  },
+  {
+    id:"nahantu", head:"Vessel of Hatred", title:"Nahantu", sub:"Jungle · Act VII (Vessel of Hatred) · in-game Renown: 6 WP · 3 SH · 43 SQ · 20 DG", lvl:"Level-scaled · post-Act VI / VoH",
+    groups:[
+      {h:"Waypoints · 6 total (2 unlock via Strongholds)", items:[
+        {id:"nawp-1", type:"waypoint", name:"Kurast Docks", m:"Lingering Hatred (far north) · first waypoint you reach via The Den."},
+        {id:"nawp-2", type:"waypoint", name:"Kurast Bazaar", m:"Upper Kurast, the central capital hub · all vendors + the Kurast Undercity."},
+        {id:"nawp-3", type:"waypoint", name:"Ichorfall", m:"Field of Giants, west/south of Kurast."},
+        {id:"nawp-4", type:"waypoint", name:"Samuk", m:"Five Hills (northwest)."},
+        {id:"nawp-5", type:"waypoint", name:"Gates of the Necropolis", m:"The Festering Dark (southwest) · unlocks when you clear The Festering Dark Stronghold."},
+        {id:"nawp-6", type:"waypoint", name:"Kichuk", m:"Teganze Plateau (northeast) · unlocks when you clear the Kichuk Stronghold."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"nash-1", type:"stronghold", name:"Kichuk", m:"NE Teganze Plateau · unlocks the Kichuk waypoint, Caves of Kutokue dungeon, and the Snatched from the Nest quest."},
+        {id:"nash-2", type:"stronghold", name:"The Festering Dark", m:"West/SW of Kurast · unlocks the Gates of the Necropolis waypoint, Betrayed Tomb dungeon, and the Pit of Anguish quest."},
+        {id:"nash-3", type:"stronghold", name:"Chakhir", m:"Southeast, east of Kurast · opens the area for the Love Lotus quest."},
+      ]},
+      {h:"Side Quests · 43 total · powerpyx order", items:[
+        {id:"nasq-01", type:"side", name:"Where Credit Is Due", loc:"Kurast Docks · after the Travincal campaign step", m:"Kill Akna the Satiated."},
+        {id:"nasq-02", type:"side", name:"The Witness", loc:"Kurast Docks", m:"Escort Chairul to the task spots, then find him."},
+        {id:"nasq-03", type:"side", name:"Tragic Inheritance", loc:"Kurast Docks", m:"Cleanse the cow."},
+        {id:"nasq-04", type:"side", name:"Tenets of Depravity: Sacrament of the Faithless", loc:"Kurast Docks", m:"Seven Stones · kill the Berserk Knight, take the item to Prava in Gea Kul. (starts the Tenets chain)"},
+        {id:"nasq-05", type:"side", name:"Courage to Continue", loc:"The Sunless Holt", m:"Cleanse the Shrine of Akarat."},
+        {id:"nasq-06", type:"side", name:"Return to Dust", loc:"The Sunless Holt", m:"Find the Golden Bird in Travincal."},
+        {id:"nasq-07", type:"side", name:"The Scales of History", loc:"Kurast", m:"Help Mordarin, then clear the Mage Clan Ruins (kill the Ennead Specters)."},
+        {id:"nasq-08", type:"side", name:"Scout's Honor", loc:"Kurast", m:"Seven Stones · kill the Infected Scouts."},
+        {id:"nasq-09", type:"side", name:"The Pit of Anguish", loc:"Kurast · needs The Festering Dark Stronghold", m:"Find the Jeweled Finger of Ezra-Kan."},
+        {id:"nasq-10", type:"side", name:"The Keening Spirit", bug:1, bugmsg:"Can be picked up early, but it only completes after you finish the VoH campaign.", loc:"Kurast Bazaar", npc:"Nunir", m:"Kill the Spirit-Gorged Hollow — Bashe spawns north of the marked area."},
+        {id:"nasq-11", type:"side", name:"Tenets of Depravity: An End to Suffering", loc:"Faith's Torch · auto after Tenets of Depravity: Sacrament of the Faithless", m:"Knight Command Quarter, kill the Burned Knights."},
+        {id:"nasq-12", type:"side", name:"Tenets of Depravity: Companion to Madness", loc:"Seared Revelation · auto after Tenets of Depravity: An End to Suffering", m:"Kill the waves of enemies."},
+        {id:"nasq-13", type:"side", name:"Tenets of Depravity: Scion to Blasphemies", loc:"Temple of the Profane · auto after Tenets of Depravity: Companion to Madness", m:"Kill Captain Kharov."},
+        {id:"nasq-14", type:"side", name:"Following Faith", loc:"Flowing Tears", m:"Read the Etched Plaque, jump the gap, open the chest."},
+        {id:"nasq-15", type:"side", name:"Tsalir's Blessing", loc:"Diregloom Jungle", m:"Tsalir's Shrine, kill Lakhewon."},
+        {id:"nasq-16", type:"side", name:"Goatman's Bane", loc:"Diregloom Jungle · 6 Undamaged Goatman Heads", m:"Altar, then heal Sutsara."},
+        {id:"nasq-17", type:"side", name:"The Ravenous Idol", loc:"Diregloom Jungle · after Goatman's Bane", m:"Bring the Ravenous Idol to Sutsara."},
+        {id:"nasq-18", type:"side", name:"Salt the Earth", drop:1, loc:"Starts from the Alchemist Phial (search corpses in Diregloom Jungle)", m:"Kill Demonic Seeds for Ichor."},
+        {id:"nasq-19", type:"side", name:"Depraved Wages", loc:"Titans' Graveyard", m:"Find the miners, kill the Hollows, claim the foreman's gear."},
+        {id:"nasq-20", type:"side", name:"Appeal of Faith", loc:"Gurnok", m:"Help Lazlo, get the Colossus Gut Ichor."},
+        {id:"nasq-21", type:"side", name:"The Deafened Mourning", loc:"Gurnok · after Appeal of Faith · leave & return · Beast Graveyard for the Iron Horn", m:"Wak'Lan."},
+        {id:"nasq-22", type:"side", name:"The Final Rite", loc:"Gurnok · auto after The Deafened Mourning", m:"Breached Anchorage, return the Consecrated Horn."},
+        {id:"nasq-23", type:"side", name:"By Their Fruits", loc:"Beast Fate Wilderness · after The Final Rite · leave & return · pick up the Skatsimi Tome", m:"Gurnok."},
+        {id:"nasq-24", type:"side", name:"Wayward Friendship", loc:"Ichorfall", m:"Drowning Rock, use the Taunt gesture, then kill the bandits."},
+        {id:"nasq-25", type:"side", name:"Cost of Doing Business", loc:"Kan Gong's Pass", m:"Kill the Bloodhawk Broodmother for the Calcified Heart."},
+        {id:"nasq-26", type:"side", name:"The Living and the Dying", loc:"The Great Shelf", m:"Help Icheyope, collect Lacuni Liver Oil."},
+        {id:"nasq-27", type:"side", name:"What Stems From the Heart", loc:"Bloodstained Heights · 3 Dahmu Blossoms (search red flowers)", m:"Abasi."},
+        {id:"nasq-28", type:"side", name:"A Canopy of Corpses", loc:"Bloodstained Heights · auto after What Stems From the Heart · search the Corpse Caches", m:"Abasi."},
+        {id:"nasq-29", type:"side", name:"The Bestial Soul of Teganze", loc:"Kanahas River Basin · auto after A Canopy of Corpses · Nyamoyo's Rift ritual", m:"Jiona."},
+        {id:"nasq-30", type:"side", name:"Spilled Blood", loc:"Dueling Rivers · story progress", m:"Find the Wasipotsu Ceremonial Skull."},
+        {div:"▼ Complete the above before finishing the campaign — most below only unlock/finish AFTER the VoH campaign (Deeds of a Champion)"},
+        {id:"nasq-31", type:"side", name:"Shroud of Wrath", loc:"Beneath the Span · post-campaign", m:"Draw out & kill the Venators, then Venator Teunis."},
+        {id:"nasq-32", type:"side", name:"Snatched From the Nest", loc:"Kichuk · needs the Kichuk Stronghold", m:"Find Vana, kill Pon Rekin."},
+        {id:"nasq-33", type:"side", name:"Midnight Jaguars", loc:"Vale of the Long Mists · post-campaign", m:"Ancient Zakarumite Stores, hunt the Midnight Jaguars."},
+        {id:"nasq-34", type:"side", name:"The Cat-Eye Curse", loc:"Inside the Putrescent Larder dungeon · Giant Jeweled Eye", m:"The Idol, kill the One-Eyed Slaughterer."},
+        {id:"nasq-35", type:"side", name:"Lost to the Jungle", loc:"The Tangles · post-campaign", m:"Kill Consumed Villagers to reach the gem, return it to the village."},
+        {id:"nasq-36", type:"side", name:"Blood In the Grove", loc:"Nin-Obisu · after Lost to the Jungle", m:"Sutsarnin Grove waves, defeat Grove's Wrath."},
+        {id:"nasq-37", type:"side", name:"Bonded Destiny", loc:"Samuk · post-campaign", m:"Kill Ehecatl, return Rayuhuk's Egg."},
+        {id:"nasq-38", type:"side", name:"Love Lotus", loc:"Samuk · post-campaign · needs the Chakhir Stronghold", m:"Burn Payaan's Remains in the Market."},
+        {id:"nasq-39", type:"side", name:"Bloom Where You Are Planted", loc:"Samuk · post-campaign · find Umija's Garden, kill Umija", m:"Rukiya."},
+        {id:"nasq-40", type:"side", name:"Everything Old", loc:"Samuk · post-campaign · Dian · investigate the Foreboding Clearing", m:"Ah-Mutan Ruins (the trap leads into the Deceiver's Sanctum)."},
+        {id:"nasq-41", type:"side", name:"Overcoming Suffering", loc:"Restless Canopy", m:"Starts at an Etched Plaque in Pestilence."},
+        {id:"nasq-42", type:"side", name:"New Again", loc:"Samuk · follow-up to Everything Old — leave & return · recover Dian's sword, kill Beleth", m:"Dian."},
+        {id:"nasq-43", type:"side", name:"Two Endings", loc:"Nin-Obisu", m:"Examine the Memorial Shrine, repair the gravestone, kill the Skeletons."},
+      ]},
+      {h:"Dungeons · 20 total", items:[
+        {id:"nadg-01", type:"dungeon", name:"Forge of Malice", m:"#1 · Lingering Hatred."},
+        {id:"nadg-02", type:"dungeon", name:"Heirophant Pyre", m:"#2 · Lingering Hatred."},
+        {id:"nadg-03", type:"dungeon", name:"Remnants of Rage", m:"#3 · Lingering Hatred."},
+        {id:"nadg-04", type:"dungeon", name:"Murmuring Spiral", m:"#4 · Seven Stones."},
+        {id:"nadg-05", type:"dungeon", name:"Iron Cenotaph", m:"#5 · Seven Stones."},
+        {id:"nadg-06", type:"dungeon", name:"Razak's Descent", m:"#6 · Seven Stones."},
+        {id:"nadg-07", type:"dungeon", name:"Seething Underpass", m:"#7 · Five Hills."},
+        {id:"nadg-08", type:"dungeon", name:"Feeding Grounds", m:"#8 · Five Hills."},
+        {id:"nadg-09", type:"dungeon", name:"Putrescent Larder", m:"#9 · Five Hills · home of the Cat-Eye Curse side quest."},
+        {id:"nadg-10", type:"dungeon", name:"Betrayed Tomb", m:"#10 · The Festering Dark · unlocks when you clear The Festering Dark Stronghold."},
+        {id:"nadg-11", type:"dungeon", name:"Ularian Sepulcher", m:"#11 · Restless Canopy."},
+        {id:"nadg-12", type:"dungeon", name:"Hallowed Stones", m:"#12 · Restless Canopy."},
+        {id:"nadg-13", type:"dungeon", name:"Vile Hive", m:"#13 · Restless Canopy."},
+        {id:"nadg-14", type:"dungeon", name:"Beast Graveyard", m:"#14 · Field of Giants · used by the Deafened Mourning side quest."},
+        {id:"nadg-15", type:"dungeon", name:"Ruined Wild", m:"#15 · Field of Giants."},
+        {id:"nadg-16", type:"dungeon", name:"Forgotten Remains", m:"#16 · Field of Giants."},
+        {id:"nadg-17", type:"dungeon", name:"Sleepless Hollow", m:"#17 · Teganze Plateau."},
+        {id:"nadg-18", type:"dungeon", name:"Farai Cliffs", m:"#18 · Teganze Plateau."},
+        {id:"nadg-19", type:"dungeon", name:"Skatsimi Fane", m:"#19 · Teganze Plateau."},
+        {id:"nadg-20", type:"dungeon", name:"Caves of Kutokue", m:"#20 · Kichuk area (north) · reachable after the Kichuk Stronghold."},
+      ]},
+    ]
+  },
+  {
+    id:"skovos", head:"Lord of Hatred", title:"Skovos", sub:"Island archipelago · Lord of Hatred · per official Renown: 8 WP · 3 SH · 50 SQ · 12 DG", lvl:"Level-scaled · LoH",
+    groups:[
+      {h:"Waypoints · 8 · 20 Renown each", items:[
+        {id:"skwp-temis", type:"waypoint", name:"Temis", m:"Central capital hub · Queen Adreona's city · all vendors + the post-campaign endgame hub (War Plans, Horadric Cube)."},
+        {id:"skwp-visionsend", type:"waypoint", name:"Vision's End", m:"Unlocks as the campaign opens the islands."},
+        {id:"skwp-templelife", type:"waypoint", name:"Temple of Life", m:"Also hosts two dungeons (Archive of the Makers, The Closed Way)."},
+        {id:"skwp-athulua", type:"waypoint", name:"Athulua Garrison", m:"Athulua isle."},
+        {id:"skwp-tyrael", type:"waypoint", name:"Tyrael's Encampment", m:"Tyrael's base of operations."},
+        {id:"skwp-foolsquarry", type:"waypoint", name:"Fool's Quarry", m:"Western reaches."},
+        {id:"skwp-saltwind", type:"waypoint", name:"Saltwind", m:"Pirate coast · by the Saltwind stronghold."},
+        {id:"skwp-xanderos", type:"waypoint", name:"Xanderos", m:"By the Xanderos stronghold."},
+      ]},
+      {h:"Strongholds · 3 · 100 Renown each", items:[
+        {id:"sksh-xanderos", type:"stronghold", name:"Xanderos", m:"A sealed ruin of the Firstborn, mysterious and deadly."},
+        {id:"sksh-saltwind", type:"stronghold", name:"Saltwind", m:"Jagged sea outcropping of shipwrecked pirates, outlaws, and dark secrets."},
+        {id:"sksh-cosmic", type:"stronghold", name:"Cosmic Archives", m:"Repository of artifacts from the Dawn of Sanctuary — angelic and demonic. Has 3 wings (Angelic, Infernal, Garden)."},
+      ]},
+      {h:"Side Quests · 50 · 30 Renown each (5 verified · full list not yet published)", items:[
+        {id:"sksq-legacy", type:"side", name:"Legacy of the Sightless", loc:"Philios", npc:"Seer Athrpa", m:"Objective details not yet published."},
+        {id:"sksq-sightthrice", type:"side", name:"Sight Thrice Paid", loc:"Lycander · starts from a world object", m:"Objective details not yet published."},
+        {id:"sksq-ashes", type:"side", name:"Ashes in the Eye", loc:"Lycander · starts from a world object", m:"Objective details not yet published."},
+        {id:"sksq-sweet", type:"side", name:"Sweet to the Taste, Bitter to the Young", loc:"Confirmed via a hands-on LoH walkthrough; exact start location not yet documented"},
+        {id:"sksq-brine", type:"side", name:"Brine and Blood", loc:"Confirmed via a dedicated quest walkthrough video; exact start location not yet documented"},
+        {pending:"Skovos has 50 side quests total (official Renown screen). The 5 above are verified, but no site has published a complete named list yet — Game8's Skovos quest page is still marked work-in-progress. I'll add the rest as they're published, or tell me names from your in-game journal and I'll add them immediately."},
+      ]},
+      {h:"Dungeons · 12 · 40 Renown each", items:[
+        {id:"skdg-temissewers", type:"dungeon", name:"Temis Sewers", m:"Temis Promenade · visited during the Chapter 1 campaign (The Queen and the Saint)."},
+        {id:"skdg-atrapos", type:"dungeon", name:"Atrapos Grove", m:"Eastlook Bluff."},
+        {id:"skdg-mindseye", type:"dungeon", name:"The Mind's Eye", m:"Mount Karcheus."},
+        {id:"skdg-archivemakers", type:"dungeon", name:"Archive of the Makers", m:"Temple of Life."},
+        {id:"skdg-closedway", type:"dungeon", name:"The Closed Way", m:"Temple of Life."},
+        {id:"skdg-labyrinthine", type:"dungeon", name:"Labyrinthine Grove", m:"Fragrant Clearing · visited during the campaign (The Path of Riddles — Time-Worn Statue puzzles)."},
+        {id:"skdg-zeraemarina", type:"dungeon", name:"Zerae Marina", m:"Portemos."},
+        {id:"skdg-foundering", type:"dungeon", name:"Foundering Caverns", m:"Myssena."},
+        {id:"skdg-bowels", type:"dungeon", name:"Bowels of the Old City", m:"The Cankering Center."},
+        {id:"skdg-hefaetrus", type:"dungeon", name:"Tunnels of Hefaetrus", m:"The Gasping Slopes · Mount Hefaetrus."},
+        {id:"skdg-pools", type:"dungeon", name:"Pools of Creation", m:"Temple of Union."},
+        {id:"skdg-scorched", type:"dungeon", name:"Scorched Tunnels", m:"Skartara · east of the volcanic isle. A dungeon called Cataclysm is also reported in Skartara — if your Renown screen counts one of these differently, tell me and I'll swap it."},
+      ]},
+    ]
+  }
+];
+
+/* ===== PERSISTENCE (window.storage — survives app close) ===== */
+const KEY="d4_completion_state_v1";
+let state={}, saveTimer=null;
+const saveEl=document.getElementById("save"), saveTxt=document.getElementById("saveTxt");
+function setSave(m){saveEl.className="save"+(m==="ok"?" ok":m==="busy"?" busy":"");saveTxt.textContent=m==="ok"?"Saved":m==="busy"?"Saving…":"Not saved";}
+async function loadState(){try{const r=await window.storage.get(KEY);if(r&&r.value)state=JSON.parse(r.value)||{};}catch(e){state={};}}
+async function persist(){setSave("busy");try{await window.storage.set(KEY,JSON.stringify(state));setSave("ok");}catch(e){setSave("idle");}}
+function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
+
+/* ===== EXPANSION TABS ===== */
+const CAMPAIGN_IDS=new Set(["prologue","acts16","epilogue2","vohcampaign","vohepilogue","lohcampaign"]);
+function partOf(id){return CAMPAIGN_IDS.has(id)?"campaign":"regions";}
+let activeTab="campaign";
+function tabRegions(){return DATA.filter(s=>partOf(s.id)===activeTab);}
+
+/* ===== COUNTING (only checkable rows: have type+name, not callout/pending) ===== */
+function isCheckable(it){return it.type&&it.name&&!it.callout&&!it.pending;}
+function secItems(sec){return sec.groups.flatMap(g=>g.items||[]).filter(isCheckable);}
+function counts(sec){const it=secItems(sec);return{done:it.filter(x=>state[x.id]).length,total:it.length};}
+function overall(){let d=0,t=0;tabRegions().forEach(s=>{const c=counts(s);d+=c.done;t+=c.total;});return{d,t};}
+
+/* ===== RENDER ===== */
+const app=document.getElementById("app");
+function render(){
+  app.innerHTML="";
+  const regions=tabRegions();
+  const fn=document.createElement("div");fn.className="flownote";
+  fn.textContent=activeTab==="campaign"
+    ?"Part 1 — play the campaigns in release order: Base Game → Vessel of Hatred → Lord of Hatred."
+    :"Part 2 — do this AFTER finishing all campaigns: the post-campaign state unlocks (and un-bugs) most side quests, dungeons, and open-world content.";
+  app.appendChild(fn);
+  if(!regions.length){app.innerHTML='<div class="loading">Skovos (Lord of Hatred) has not been added yet — coming soon.</div>';updateTotals();return;}
+  regions.forEach((sec,i)=>{
+    if(sec.head){const sh=document.createElement("div");sh.className="suphead";sh.innerHTML="<span>"+sec.head+"</span>";app.appendChild(sh);}
+    const c=counts(sec), open=false;
+    const el=document.createElement("section");el.className="sec"+(open?" open":"");
+    const head=document.createElement("div");head.className="sec-head";
+    head.innerHTML=`<span class="chev">▶</span><div class="sec-title"><div class="t">${sec.title}</div></div>${sec.lvl?`<span class="lvl">${sec.lvl}</span>`:""}<span class="mini" data-mini="${sec.id}">${c.done}/${c.total}</span>`;
+    head.addEventListener("click",()=>el.classList.toggle("open"));el.appendChild(head);
+    const pbar=document.createElement("div");pbar.className="pbar";
+    pbar.innerHTML=`<div class="pfill" data-pfill="${sec.id}" style="width:${c.total?c.done/c.total*100:0}%"></div>`;el.appendChild(pbar);
+    const body=document.createElement("div");body.className="sec-body";
+    const inner=document.createElement("div");inner.className="sec-inner";
+    sec.groups.forEach(g=>{
+      const grp=document.createElement("div");grp.className="grp";
+      if(g.h)grp.innerHTML=`<div class="grp-h">${g.h}</div>`;
+      (g.items||[]).forEach(it=>{
+        if(it.callout){const d=document.createElement("div");d.className="callout";d.innerHTML=it.callout;grp.appendChild(d);return;}
+        if(it.pending){const d=document.createElement("div");d.className="pending";d.innerHTML="⚒ "+it.pending;grp.appendChild(d);return;}
+        if(it.div){const d=document.createElement("div");d.className="divider";d.innerHTML="<span>"+it.div+"</span>";grp.appendChild(d);return;}
+        if(it.alert){const d=document.createElement("div");d.className="alert";d.innerHTML="⚠ "+it.alert;grp.appendChild(d);return;}
+        const on=!!state[it.id];
+        const row=document.createElement("div");row.className="row"+(on?" done":"");row.dataset.row=it.id;
+        row.innerHTML=`<div class="cb ${on?"on":""}" data-cb="${it.id}"></div><span class="tag t-${it.type}">${TAGLABEL[it.type]}</span><div class="txt"><div class="l">${it.name}${it.drop?' <span class="drop" title="Starts from a random world item drop — no NPC quest giver">🎲 drop</span>':''}${it.bug?' <span class="bug" title="'+(it.bugmsg||'Known to bug for some players — relog or clear nearby world events if it won\'t start or progress')+'">⚠ can bug</span>':''}</div>${(it.loc||it.npc||it.chain)?'<div class="mrow">'+(it.loc?'<span class="pill"><svg viewBox="0 0 24 24"><path d="M12 21c-4-4.2-6-7.3-6-10a6 6 0 1 1 12 0c0 2.7-2 5.8-6 10z"/><circle cx="12" cy="11" r="2.3"/></svg>'+it.loc+'</span>':'')+(it.npc?'<span class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.3-3.2 3.8-4.8 6.5-4.8s5.2 1.6 6.5 4.8"/></svg>'+it.npc+'</span>':'')+(it.chain?'<span class="pill"><svg viewBox="0 0 24 24"><path d="M4 7v5a4 4 0 0 0 4 4h11"/><path d="M15 12l4 4-4 4"/></svg>'+it.chain+'</span>':'')+'</div>':''}${it.m?`<div class="m">${it.m}</div>`:""}</div>`;
+        row.querySelector(".cb").addEventListener("click",()=>toggle(it.id));
+        grp.appendChild(row);
+      });
+      if(g.pending){const d=document.createElement("div");d.className="pending";d.innerHTML="⚒ "+g.pending;grp.appendChild(d);}
+      inner.appendChild(grp);
+    });
+    body.appendChild(inner);el.appendChild(body);app.appendChild(el);
+  });
+  updateTotals();
+}
+function toggle(id){
+  state[id]=!state[id];if(!state[id])delete state[id];
+  const on=!!state[id];
+  const cb=document.querySelector(`[data-cb="${id}"]`);
+  if(cb){cb.classList.toggle("on",on);const row=cb.closest(".row");row.classList.toggle("done",on);}
+  DATA.forEach(sec=>{const c=counts(sec);const mini=document.querySelector(`[data-mini="${sec.id}"]`);const pf=document.querySelector(`[data-pfill="${sec.id}"]`);if(mini)mini.textContent=`${c.done}/${c.total}`;if(pf)pf.style.width=(c.total?c.done/c.total*100:0)+"%";});
+  updateTotals();queueSave();
+}
+function updateTotals(){const{d,t}=overall();const p=t?Math.round(d/t*100):0;document.getElementById("ofill").style.width=p+"%";document.getElementById("oCount").textContent=`${d} of ${t} tracked items`;document.getElementById("oPct").textContent=p+"%";}
+
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{activeTab=b.dataset.tab;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x===b));render();}));
+const ov=document.getElementById("ov");
+document.getElementById("resetBtn").addEventListener("click",()=>ov.classList.add("show"));
+document.getElementById("ovNo").addEventListener("click",()=>ov.classList.remove("show"));
+document.getElementById("ovYes").addEventListener("click",async()=>{state={};ov.classList.remove("show");render();await persist();});
+
+/* ===== HAMBURGER MENU ===== */
+const hamBtn=document.getElementById("hamBtn"),menu=document.getElementById("menu");
+function closeMenu(){menu.hidden=true;hamBtn.classList.remove("on");hamBtn.setAttribute("aria-expanded","false");}
+function openMenu(){menu.hidden=false;hamBtn.classList.add("on");hamBtn.setAttribute("aria-expanded","true");}
+hamBtn.addEventListener("click",e=>{e.stopPropagation();menu.hidden?openMenu():closeMenu();});
+menu.addEventListener("click",e=>e.stopPropagation());
+document.querySelectorAll(".menu-item").forEach(b=>b.addEventListener("click",closeMenu));
+document.addEventListener("click",closeMenu);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu();});
+
+/* ===== BACKUP / RESTORE (copy & paste — works inside the app sandbox) ===== */
+const bk=document.getElementById("bk"),bkTitle=document.getElementById("bkTitle"),bkText=document.getElementById("bkText"),bkAction=document.getElementById("bkAction"),bkMsg=document.getElementById("bkMsg");
+let bkMode="backup";
+function openBackup(){
+  bkMode="backup";
+  bkTitle.innerHTML="<b>Backup.</b> Here is your progress as text. Tap <b>Copy</b>, then paste it into a note, email to yourself, or a text file to keep it safe.";
+  bkText.value=JSON.stringify({app:"d4-completion",key:KEY,saved:new Date().toISOString(),checks:state});
+  bkText.readOnly=true;bkAction.textContent="Copy";bkMsg.textContent="";
+  bk.classList.add("show");setTimeout(()=>{bkText.focus();bkText.select();},60);
+}
+function openRestore(){
+  bkMode="restore";
+  bkTitle.innerHTML="<b>Restore.</b> Paste a backup below and tap <b>Restore</b>. This only adds checkmarks — it never removes any.";
+  bkText.value="";bkText.readOnly=false;bkAction.textContent="Restore";bkMsg.textContent="";
+  bk.classList.add("show");setTimeout(()=>bkText.focus(),60);
+}
+function closeBk(){bk.classList.remove("show");}
+document.getElementById("backupBtn").addEventListener("click",openBackup);
+document.getElementById("restoreBtn").addEventListener("click",openRestore);
+document.getElementById("bkClose").addEventListener("click",closeBk);
+bk.addEventListener("click",e=>{if(e.target===bk)closeBk();});
+bkAction.addEventListener("click",async()=>{
+  if(bkMode==="backup"){
+    bkText.focus();bkText.select();
+    let ok=false;
+    try{ok=document.execCommand("copy");}catch(e){}
+    if(!ok&&navigator.clipboard){try{await navigator.clipboard.writeText(bkText.value);ok=true;}catch(e){}}
+    bkMsg.textContent=ok?"Copied ✓  — now paste it somewhere safe.":"Select the text above, then copy it (Ctrl/Cmd+A, Ctrl/Cmd+C).";
+  }else{
+    let data;
+    try{data=JSON.parse(bkText.value.trim());}catch(e){bkMsg.textContent="That isn't valid backup text — paste the full thing you copied.";return;}
+    const checks=(data&&data.checks&&typeof data.checks==="object")?data.checks:((data&&typeof data==="object")?data:null);
+    if(!checks){bkMsg.textContent="Couldn't find any progress in that text.";return;}
+    let added=0;Object.keys(checks).forEach(k=>{if(checks[k]&&!state[k]){state[k]=true;added++;}});
+    render();await persist();
+    bkMsg.textContent=added?("Restored "+added+" item"+(added===1?"":"s")+" ✓"):"Everything in that backup was already checked ✓";
+  }
+});
+
+(async function(){await loadState();render();setSave("ok");})();
+</script>
