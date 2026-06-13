@@ -1050,8 +1050,22 @@ const KEY="d4_completion_state_v1";
 let state={}, saveTimer=null;
 const saveEl=document.getElementById("save"), saveTxt=document.getElementById("saveTxt");
 function setSave(m){saveEl.className="save"+(m==="ok"?" ok":m==="busy"?" busy":"");saveTxt.textContent=m==="ok"?"Saved":m==="busy"?"Saving…":"Not saved";}
-async function loadState(){try{const r=await window.storage.get(KEY);if(r&&r.value)state=JSON.parse(r.value)||{};}catch(e){state={};}}
-async function persist(){setSave("busy");try{await window.storage.set(KEY,JSON.stringify(state));setSave("ok");}catch(e){setSave("idle");}}
+/* Persist via localStorage (works on any real URL incl. GitHub Pages).
+   Falls back to window.storage when running inside the Claude artifact preview. */
+const hasLS=(()=>{try{const k="__d4t";localStorage.setItem(k,"1");localStorage.removeItem(k);return true;}catch(e){return false;}})();
+async function loadState(){
+  try{
+    if(hasLS){const v=localStorage.getItem(KEY);if(v)state=JSON.parse(v)||{};return;}
+    const r=await window.storage.get(KEY);if(r&&r.value)state=JSON.parse(r.value)||{};
+  }catch(e){state={};}
+}
+async function persist(){
+  setSave("busy");
+  try{
+    if(hasLS){localStorage.setItem(KEY,JSON.stringify(state));setSave("ok");return;}
+    await window.storage.set(KEY,JSON.stringify(state));setSave("ok");
+  }catch(e){setSave("idle");}
+}
 function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
 
 /* ===== EXPANSION TABS ===== */
