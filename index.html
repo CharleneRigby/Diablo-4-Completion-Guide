@@ -115,6 +115,7 @@
   .row.done .tag{opacity:.45}
 
   .t-quest{color:#e7c98a;background:rgba(200,132,46,.12);border:1px solid rgba(200,132,46,.3)}
+  .t-priority{color:#c4a6f0;background:rgba(150,100,220,.16);border:1px solid rgba(150,100,220,.4)}
   .t-side{color:#8fb8e8;background:rgba(90,140,210,.14);border:1px solid rgba(90,140,210,.36)}
   .t-stronghold{color:#e89a8a;background:rgba(168,33,28,.13);border:1px solid rgba(168,33,28,.32)}
   .t-boss{color:#f0a0a0;background:rgba(168,33,28,.2);border:1px solid rgba(168,33,28,.45)}
@@ -210,7 +211,7 @@
 
 <script>
 /* ===== DATA — atomic named items. type => tag. Verified only; gaps flagged. ===== */
-const TAGLABEL={quest:"Quest",side:"Side Quest",waypoint:"Waypoint",dungeon:"Dungeon",stronghold:"Stronghold",boss:"World Boss",altar:"Altar",area:"Area",cellar:"Cellar",event:"Event"};
+const TAGLABEL={quest:"Quest",priority:"Priority",side:"Side Quest",waypoint:"Waypoint",dungeon:"Dungeon",stronghold:"Stronghold",boss:"World Boss",altar:"Altar",area:"Area",cellar:"Cellar",event:"Event"};
 const DATA=[
   {
     id:"prologue", head:"Base Game", title:"Prologue — “Wandering”", sub:"8 campaign quests · Nevesk → Kyovashad", lvl:"Lvl 1",
@@ -1022,13 +1023,17 @@ const DATA=[
         {id:"sksh-saltwind", type:"stronghold", name:"Saltwind", m:"Jagged sea outcropping of shipwrecked pirates, outlaws, and dark secrets."},
         {id:"sksh-cosmic", type:"stronghold", name:"Cosmic Archives", m:"Repository of artifacts from the Dawn of Sanctuary — angelic and demonic. Has 3 wings (Angelic, Infernal, Garden)."},
       ]},
-      {h:"Side Quests · 50 · 30 Renown each (5 verified · full list not yet published)", items:[
+      {h:"Priority Quests · feature unlocks · no Renown", items:[
+        {id:"skpq-fishing", type:"priority", name:"Fishing", loc:"Shi Yugong's Haven · dock east of Temis · after The Queen and the Saint", npc:"Shi Yugong", m:"Priority quest (unlocks the Fishing feature — doesn't count toward the 50 side quests). Talk to Shi Yugong, choose \'Are the fish not biting today?\', then cast and catch your first fish."},
+      ]},
+      {h:"Side Quests · 50 · 30 Renown each (6 verified · full list not yet published)", items:[
         {id:"sksq-legacy", type:"side", name:"Legacy of the Sightless", loc:"Philios", npc:"Seer Athrpa", m:"Objective details not yet published."},
         {id:"sksq-sightthrice", type:"side", name:"Sight Thrice Paid", loc:"Lycander · starts from a world object", m:"Objective details not yet published."},
         {id:"sksq-ashes", type:"side", name:"Ashes in the Eye", loc:"Lycander · starts from a world object", m:"Objective details not yet published."},
         {id:"sksq-sweet", type:"side", name:"Sweet to the Taste, Bitter to the Young", loc:"Confirmed via a hands-on LoH walkthrough; exact start location not yet documented"},
         {id:"sksq-brine", type:"side", name:"Brine and Blood", loc:"Confirmed via a dedicated quest walkthrough video; exact start location not yet documented"},
-        {pending:"Skovos has 50 side quests total (official Renown screen). The 5 above are verified, but no site has published a complete named list yet — Game8's Skovos quest page is still marked work-in-progress. I'll add the rest as they're published, or tell me names from your in-game journal and I'll add them immediately."},
+        {id:"sksq-favor", type:"side", name:"Favor for a Favor", loc:"Shi Yugong's Haven · dock east of Temis", npc:"Shi Yugong", chain:"Auto-follows the Fishing priority quest", m:"Catch the three fish Shi Yugong asks for (Koalodon, Silverbelly, Darkling) — Rare/yellow variant only — then return to him."},
+        {pending:"Skovos has 50 side quests total (official Renown screen). The 6 above are verified, but no site has published a complete named list yet — Game8's Skovos quest page is still marked work-in-progress. I'll add the rest as they're published, or tell me names from your in-game journal and I'll add them immediately."},
       ]},
       {h:"Dungeons · 12 · 40 Renown each", items:[
         {id:"skdg-temissewers", type:"dungeon", name:"Temis Sewers", m:"Temis Promenade · visited during the Chapter 1 campaign (The Queen and the Saint)."},
