@@ -82,6 +82,9 @@
   .sec-title{flex:1 1 auto;min-width:0}
   .sec-title .t{font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;font-weight:600;letter-spacing:.04em;font-size:15.5px}
   .sec-title .s{font-size:12.5px;font-style:italic;color:var(--ink-dim);margin-top:2px}
+  .maplink{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-size:11.5px;color:var(--ember);text-decoration:none;border-bottom:1px dotted var(--ember);padding-bottom:1px}
+  .maplink svg{width:12px;height:12px;fill:none;stroke:var(--ember);stroke-width:1.8;stroke-linejoin:round}
+  .maplink:hover{color:var(--ink);border-color:var(--ink)}
   .lvl{flex:0 0 auto;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ember);border:1px solid rgba(200,132,46,.3);border-radius:20px;padding:3px 9px;white-space:nowrap}
   .mini{flex:0 0 auto;font-size:12px;color:var(--ink-dim);font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
 
@@ -552,7 +555,7 @@ const DATA=[
     ]
   },
   {
-    id:"scosglen", title:"Scosglen", sub:"Druid homelands · Act II · in-game Renown: 8 WP · 3 SH · 47 SQ · 25 DG", lvl:"Lvl ~15–25",
+    id:"scosglen", title:"Scosglen", mapurl:"https://www.powerpyx.com/diablo-4-scosglen-all-side-quest-locations/", sub:"Druid homelands · Act II · in-game Renown: 8 WP · 3 SH · 47 SQ · 25 DG", lvl:"Lvl ~15–25",
     groups:[
       {h:"Waypoints · 8 total", items:[
         {id:"scwp-1", type:"waypoint", name:"Cerrigar", m:"Capital · central hub (The Emerald Chase)."},
@@ -570,53 +573,53 @@ const DATA=[
         {id:"scsh-3", type:"stronghold", name:"Hope's Light", m:"Far north · lighthouse · unlocks the Flooded Depths dungeon."},
       ]},
       {h:"Side Quests · 47 total (all named) · in powerpyx map order", items:[
-        {id:"scsq-01", type:"side", name:"Chronicling the Old Ways", loc:"Laglend Fen", npc:"Moreg", m:"Collect 3 Runic Tablets from Beasts."},
-        {id:"scsq-02", type:"side", name:"Braega's Chronicles", drop:1, m:"Loot A History of Scosglen from Khazra in Westering Lowlands → Wilfred at Firebreak Manor."},
-        {id:"scsq-03", type:"side", name:"A Plea for Aid", loc:"Firebreak Manor · after Act II progress", m:"Cerrigar, speak to Corman."},
-        {id:"scsq-04", type:"side", name:"What Ails Thee", loc:"Cerrigar", m:"Blycroft, speak to Phelan."},
-        {id:"scsq-05", type:"side", name:"The Fledgling Merchant", loc:"Cerrigar · after Act II", m:"Kill Tusked Chargers for 10 Charger Tusks."},
-        {id:"scsq-06", type:"side", name:"Blood of Brigands", loc:"Cerrigar · after Act II", m:"Kill 50 Bandits in the Emerald Chase."},
-        {id:"scsq-07", type:"side", name:"Daughter of the Oak", loc:"Cerrigar · after Act II", m:"Conquer Túr Dúlra, then Underroot dungeon for a Root Cutting → Albard."},
-        {id:"scsq-08", type:"side", name:"The Starving Strand", loc:"Braestaig", m:"Strandflats, speak to Tadhg."},
-        {id:"scsq-09", type:"side", name:"Stolen Artifice", loc:"Braestaig", m:"Kill Darcel."},
-        {id:"scsq-10", type:"side", name:"Votive Passing", loc:"Braestaig · after Act II", m:"Search 3 resting sites, deliver the item."},
-        {id:"scsq-11", type:"side", name:"Ravenous Predator's Offering", drop:1, m:"Loot Ravenous Predator's Offering from corpses in Wailing Hills → harvest anima from Beasts."},
-        {id:"scsq-12", type:"side", name:"A Briny Fate", loc:"Marowen", m:"Speak to the Wounded Soldier, open a Sailor's Chest for the letter."},
-        {id:"scsq-13", type:"side", name:"Stemming the Tide", loc:"Marowen", m:"Kill 100 Drowned."},
-        {id:"scsq-14", type:"side", name:"Whispers from Below", loc:"The Gaunt Eyrr", m:"Find Cecil."},
-        {id:"scsq-15", type:"side", name:"A Sodden Pact", chain:"Auto-follows Whispers from Below", m:"Find 5 Sodden Growth → Roina on the beach."},
-        {id:"scsq-16", type:"side", name:"Untangling Truths", chain:"Auto-follows A Sodden Pact", m:"Place offerings at 3 Derelict Shrines."},
-        {id:"scsq-17", type:"side", name:"Threads of Envy", chain:"Auto-follows Untangling Truths", m:"Mithering Descent, defeat the Sodden Effigy → Marowen."},
-        {id:"scsq-18", type:"side", name:"Warded Sailor's Vessel", drop:1, m:"Loot Warded Sailor's Vessel from corpses in The Cursed Scarps → harvest anima from Drowned."},
-        {id:"scsq-19", type:"side", name:"A Deepening Shadow", loc:"Shob'ha's Perch", m:"Kill corrupted deer, examine 3 spots, kill Barret."},
-        {id:"scsq-20", type:"side", name:"The Old Ways", chain:"Auto-follows A Deepening Shadow", m:"Conquer Túr Dúlra, Lair of the Despoiler, kill 3 Wildwood, activate 3 Sacred Stones."},
-        {id:"scsq-21", type:"side", name:"A Sliver of Light", chain:"Auto-follows The Old Ways", m:"Lead Mochrann to 3 corrupted fonts."},
-        {id:"scsq-22", type:"side", name:"Tending Nature", loc:"Túr Dúlra · after stronghold", m:"Gather 3 items, kill the Poachers."},
-        {id:"scsq-23", type:"side", name:"The Diviner", loc:"Túr Dúlra · after stronghold", m:"Find a Runestone, activate 3 Runestones."},
-        {id:"scsq-24", type:"side", name:"Left in Ashes", loc:"Túr Dúlra · after The Diviner", m:"Kill Cursed Eadaoin's Spirit."},
-        {id:"scsq-25", type:"side", name:"The Traveling Scholar", loc:"Southern Briars · after Túr Dúlra", m:"Escort Aria, search for druid items."},
-        {id:"scsq-26", type:"side", name:"Fields of Ruin", loc:"Blycroft", m:"Place items at the marked areas."},
-        {id:"scsq-27", type:"side", name:"Feral Moon", loc:"The Harrowfields · after What Ails Thee", m:"Sarat's Lair dungeon, find the Light-Blessed Amulet."},
-        {id:"scsq-28", type:"side", name:"Ever Faithful", loc:"Wraithstead", m:"Abandoned Smuggler's Den, kill Faolan."},
-        {id:"scsq-29", type:"side", name:"First Among Wolves", loc:"Wraithstead · after Fields of Ruin", m:"Find Una's Journals, kill all werewolves."},
-        {id:"scsq-30", type:"side", name:"The Snare", chain:"Auto-follows First Among Wolves", m:"Find a druidic totem, complete the blood ritual."},
-        {id:"scsq-31", type:"side", name:"With Fangs Bared", chain:"Auto-follows The Snare", m:"Abandoned Barrow, kill Una."},
-        {id:"scsq-32", type:"side", name:"The Seer", loc:"The Cinder Woods", m:"Kill Khazra for 5 Goatman Entrails → Baewyn."},
-        {id:"scsq-33", type:"side", name:"Smoke Signals", chain:"Auto-follows The Seer", m:"Kealer Farm → return to Baewyn."},
-        {id:"scsq-34", type:"side", name:"Reclamation", chain:"Auto-follows Smoke Signals", m:"Domhainne Tunnels, find the Cathedral Cross 3×."},
-        {id:"scsq-35", type:"side", name:"Message in a Bottle", drop:1, m:"Loot the Washed-Ashore Bottle on the shore at Razor Shoals → find Padrig in Corbach."},
-        {id:"scsq-36", type:"side", name:"An Acquired Taste", loc:"Tirmair", npc:"Atli", m:"Kill Thorn Beasts for 12 Thorn Beast Meat."},
-        {id:"scsq-37", type:"side", name:"Of Pests and Pestilence", bug:1, bugmsg:"The Stinging Swarms sometimes fail to spawn in the target area, stalling the kill count (reported as recently as late 2025). Fix: leave the zone and return, or relog, to force a respawn.", loc:"Tirmair", npc:"Meav", m:"Kill 75 Stinging Swarms in the Shrouded Moors."},
-        {id:"scsq-38", type:"side", name:"Settling the Tab", loc:"Tirmair", m:"Fat Goose Inn, speak to the Innkeeper."},
-        {id:"scsq-39", type:"side", name:"The Wrong Hands", drop:1, m:"Loot Broken Carving in Shrouded Moors / Highland Wilds (after With Fangs Bared) → Artair in Wraithstead."},
-        {id:"scsq-40", type:"side", name:"A Different Beast", drop:1, m:"Loot Broken Totem in Shrouded Moors / Highland Wilds (after The Wrong Hands) → Artair."},
-        {id:"scsq-41", type:"side", name:"The Broken Bear", drop:1, m:"Loot Broken Bear Totem from Grizzly Bears (after A Different Beast) → Artair."},
-        {id:"scsq-42", type:"side", name:"Remembering the Goose", loc:"Under the Fat Goose Inn", m:"The marked area."},
-        {id:"scsq-43", type:"side", name:"Wagered Honor", loc:"Under the Fat Goose Inn", m:"Kill Gormothos."},
-        {id:"scsq-44", type:"side", name:"Claws at the Throat", loc:"Great Northern Plains · after Remembering the Goose", m:"The Inn, then the Slain Merchant."},
-        {id:"scsq-45", type:"side", name:"Pyre of Ash", chain:"Auto-follows Claws at the Throat", m:"Embered Recess, kill the enemies."},
-        {id:"scsq-46", type:"side", name:"Chasing Embers", chain:"Auto-follows Pyre of Ash", m:"The Scar, find the pyre victim on a cliff."},
-        {id:"scsq-47", type:"side", name:"The Bear of Blackweald", chain:"Auto-follows Chasing Embers", m:"Seared Hollow, kill Stana."},
+        {id:"scsq-01", type:"side", name:"Chronicling the Old Ways", loc:"Eldhaime Keep → Westering Lowlands", npc:"Moreg", m:"Collect 3 Runic Tablets from Beasts."},
+        {id:"scsq-02", type:"side", name:"Braega's Chronicles", drop:1, loc:"Eldhaime Keep → Westering Lowlands", m:"Loot A History of Scosglen from Khazra in Westering Lowlands → Wilfred at Firebreak Manor."},
+        {id:"scsq-03", type:"side", name:"A Plea for Aid", loc:"Cerrigar → Firebreak Manor · after Act II", m:"Cerrigar, speak to Corman."},
+        {id:"scsq-04", type:"side", name:"What Ails Thee", loc:"Cerrigar → The Emerald Chase", m:"Blycroft, speak to Phelan."},
+        {id:"scsq-05", type:"side", name:"The Fledgling Merchant", loc:"Cerrigar → The Emerald Chase · after Act II", m:"Kill Tusked Chargers for 10 Charger Tusks."},
+        {id:"scsq-06", type:"side", name:"Blood of Brigands", loc:"Cerrigar → The Emerald Chase · after Act II", m:"Kill 50 Bandits in the Emerald Chase."},
+        {id:"scsq-07", type:"side", name:"Daughter of the Oak", loc:"Cerrigar → The Emerald Chase · after Act II", m:"Conquer Túr Dúlra, then Underroot dungeon for a Root Cutting → Albard."},
+        {id:"scsq-08", type:"side", name:"The Starving Strand", loc:"Braestaig → Wailing Hills", m:"Strandflats, speak to Tadhg."},
+        {id:"scsq-09", type:"side", name:"Stolen Artifice", loc:"Braestaig → Wailing Hills", m:"Kill Darcel."},
+        {id:"scsq-10", type:"side", name:"Votive Passing", loc:"Braestaig → Wailing Hills · after Act II", m:"Search 3 resting sites, deliver the item."},
+        {id:"scsq-11", type:"side", name:"Ravenous Predator's Offering", drop:1, loc:"Braestaig → Wailing Hills", m:"Loot Ravenous Predator's Offering from corpses in Wailing Hills → harvest anima from Beasts."},
+        {id:"scsq-12", type:"side", name:"A Briny Fate", loc:"Marowen → Northshore", m:"Speak to the Wounded Soldier, open a Sailor's Chest for the letter."},
+        {id:"scsq-13", type:"side", name:"Stemming the Tide", loc:"Marowen → Northshore", m:"Kill 100 Drowned."},
+        {id:"scsq-14", type:"side", name:"Whispers from Below", loc:"Marowen → Northshore", m:"Find Cecil."},
+        {id:"scsq-15", type:"side", name:"A Sodden Pact", loc:"Marowen → Northshore", chain:"Auto-follows Whispers from Below", m:"Find 5 Sodden Growth → Roina on the beach."},
+        {id:"scsq-16", type:"side", name:"Untangling Truths", loc:"Marowen → Northshore", chain:"Auto-follows A Sodden Pact", m:"Place offerings at 3 Derelict Shrines."},
+        {id:"scsq-17", type:"side", name:"Threads of Envy", loc:"Marowen → Northshore", chain:"Auto-follows Untangling Truths", m:"Mithering Descent, defeat the Sodden Effigy → Marowen."},
+        {id:"scsq-18", type:"side", name:"Warded Sailor's Vessel", drop:1, loc:"Marowen → The Cursed Scarps", m:"Loot Warded Sailor's Vessel from corpses in The Cursed Scarps → harvest anima from Drowned."},
+        {id:"scsq-19", type:"side", name:"A Deepening Shadow", loc:"Cerrigar → Deep Forest", m:"Kill corrupted deer, examine 3 spots, kill Barret."},
+        {id:"scsq-20", type:"side", name:"The Old Ways", loc:"Túr Dúlra → Deep Forest · after stronghold", chain:"Auto-follows A Deepening Shadow", m:"Conquer Túr Dúlra, Lair of the Despoiler, kill 3 Wildwood, activate 3 Sacred Stones."},
+        {id:"scsq-21", type:"side", name:"A Sliver of Light", loc:"Túr Dúlra → Deep Forest · after stronghold", chain:"Auto-follows The Old Ways", m:"Lead Mochrann to 3 corrupted fonts."},
+        {id:"scsq-22", type:"side", name:"Tending Nature", loc:"Túr Dúlra → Deep Forest · after stronghold", m:"Gather 3 items, kill the Poachers."},
+        {id:"scsq-23", type:"side", name:"The Diviner", loc:"Túr Dúlra → Deep Forest · after stronghold", m:"Find a Runestone, activate 3 Runestones."},
+        {id:"scsq-24", type:"side", name:"Left in Ashes", loc:"Túr Dúlra → Deep Forest · after The Diviner", m:"Kill Cursed Eadaoin's Spirit."},
+        {id:"scsq-25", type:"side", name:"The Traveling Scholar", loc:"Túr Dúlra → Southern Briars · after stronghold", m:"Escort Aria, search for druid items."},
+        {id:"scsq-26", type:"side", name:"Fields of Ruin", loc:"Cerrigar → The Downs", m:"Place items at the marked areas."},
+        {id:"scsq-27", type:"side", name:"Feral Moon", loc:"Cerrigar → The Harrowfields · after What Ails Thee", m:"Sarat's Lair dungeon, find the Light-Blessed Amulet."},
+        {id:"scsq-28", type:"side", name:"Ever Faithful", loc:"Cerrigar → The Downs", m:"Abandoned Smuggler's Den, kill Faolan."},
+        {id:"scsq-29", type:"side", name:"First Among Wolves", loc:"Cerrigar → The Downs · after Fields of Ruin", m:"Find Una's Journals, kill all werewolves."},
+        {id:"scsq-30", type:"side", name:"The Snare", loc:"Cerrigar → The Downs", chain:"Auto-follows First Among Wolves", m:"Find a druidic totem, complete the blood ritual."},
+        {id:"scsq-31", type:"side", name:"With Fangs Bared", loc:"Cerrigar → The Downs", chain:"Auto-follows The Snare", m:"Abandoned Barrow, kill Una."},
+        {id:"scsq-32", type:"side", name:"The Seer", loc:"Corbach → Strand", m:"Kill Khazra for 5 Goatman Entrails → Baewyn."},
+        {id:"scsq-33", type:"side", name:"Smoke Signals", loc:"Corbach → Strand", chain:"Auto-follows The Seer", m:"Kealer Farm → return to Baewyn."},
+        {id:"scsq-34", type:"side", name:"Reclamation", loc:"Corbach → Strand", chain:"Auto-follows Smoke Signals", m:"Domhainne Tunnels, find the Cathedral Cross 3×."},
+        {id:"scsq-35", type:"side", name:"Message in a Bottle", drop:1, loc:"Corbach → Strand", m:"Loot the Washed-Ashore Bottle on the shore at Razor Shoals → find Padrig in Corbach."},
+        {id:"scsq-36", type:"side", name:"An Acquired Taste", loc:"Tirmair → The Shrouded Moors", npc:"Atli", m:"Kill Thorn Beasts for 12 Thorn Beast Meat."},
+        {id:"scsq-37", type:"side", name:"Of Pests and Pestilence", bug:1, bugmsg:"The Stinging Swarms sometimes fail to spawn in the target area, stalling the kill count (reported as recently as late 2025). Fix: leave the zone and return, or relog, to force a respawn.", loc:"Tirmair → The Shrouded Moors", npc:"Meav", m:"Kill 75 Stinging Swarms in the Shrouded Moors."},
+        {id:"scsq-38", type:"side", name:"Settling the Tab", loc:"Tirmair → The Shrouded Moors", m:"Fat Goose Inn, speak to the Innkeeper."},
+        {id:"scsq-39", type:"side", name:"The Wrong Hands", drop:1, loc:"Tirmair → Shrouded Moors / Highland Wilds", m:"Loot Broken Carving in Shrouded Moors / Highland Wilds (after With Fangs Bared) → Artair in Wraithstead."},
+        {id:"scsq-40", type:"side", name:"A Different Beast", drop:1, loc:"Tirmair → Shrouded Moors / Highland Wilds", m:"Loot Broken Totem in Shrouded Moors / Highland Wilds (after The Wrong Hands) → Artair."},
+        {id:"scsq-41", type:"side", name:"The Broken Bear", drop:1, loc:"Tirmair → Shrouded Moors / Highland Wilds", m:"Loot Broken Bear Totem from Grizzly Bears (after A Different Beast) → Artair."},
+        {id:"scsq-42", type:"side", name:"Remembering the Goose", loc:"Tirmair → Highland Wilds", m:"The marked area."},
+        {id:"scsq-43", type:"side", name:"Wagered Honor", loc:"Tirmair → Highland Wilds", m:"Kill Gormothos."},
+        {id:"scsq-44", type:"side", name:"Claws at the Throat", loc:"Tirmair → Highland Wilds · after Remembering the Goose", m:"The Inn, then the Slain Merchant."},
+        {id:"scsq-45", type:"side", name:"Pyre of Ash", loc:"Tirmair → Highland Wilds", chain:"Auto-follows Claws at the Throat", m:"Embered Recess, kill the enemies."},
+        {id:"scsq-46", type:"side", name:"Chasing Embers", loc:"Tirmair → Highland Wilds", chain:"Auto-follows Pyre of Ash", m:"The Scar, find the pyre victim on a cliff."},
+        {id:"scsq-47", type:"side", name:"The Bear of Blackweald", loc:"Tirmair → Highland Wilds", chain:"Auto-follows Chasing Embers", m:"Seared Hollow, kill Stana."},
       ]},
       {h:"Dungeons · 25 total · 40 Renown each", items:[
         {id:"scdg-01", type:"dungeon", name:"Broken Bulwark"},
@@ -1096,7 +1099,7 @@ function render(){
     const c=counts(sec), open=false;
     const el=document.createElement("section");el.className="sec"+(open?" open":"");
     const head=document.createElement("div");head.className="sec-head";
-    head.innerHTML=`<span class="chev">▶</span><div class="sec-title"><div class="t">${sec.title}</div></div>${sec.lvl?`<span class="lvl">${sec.lvl}</span>`:""}<span class="mini" data-mini="${sec.id}">${c.done}/${c.total}</span>`;
+    head.innerHTML=`<span class="chev">▶</span><div class="sec-title"><div class="t">${sec.title}</div>${sec.mapurl?`<a class="maplink" href="${sec.mapurl}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M9 3 3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3z"/><path d="M9 3v15M15 6v15"/></svg>view quest map</a>`:""}</div>${sec.lvl?`<span class="lvl">${sec.lvl}</span>`:""}<span class="mini" data-mini="${sec.id}">${c.done}/${c.total}</span>`;
     head.addEventListener("click",()=>el.classList.toggle("open"));el.appendChild(head);
     const pbar=document.createElement("div");pbar.className="pbar";
     pbar.innerHTML=`<div class="pfill" data-pfill="${sec.id}" style="width:${c.total?c.done/c.total*100:0}%"></div>`;el.appendChild(pbar);
